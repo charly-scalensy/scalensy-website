@@ -1,0 +1,2503 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scalensy - Moteurs outbound pour SaaS B2B</title>
+  <meta name="description" content="Scalensy construit des systemes outbound proprietaires pour SaaS B2B : ciblage, priorisation, signaux, campagnes et reporting.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --page: #eaf7ff;
+      --surface: #f8fdff;
+      --surface-soft: #dcf1ff;
+      --surface-blue: #cfeeff;
+      --ink: #142018;
+      --muted: #5f6d63;
+      --line: #dfe7dd;
+      --accent: #f5c400;
+      --accent-dark: #b78500;
+      --green: #1d8a55;
+      --green-soft: #e5f6ec;
+      --blue: #2563eb;
+      --blue-soft: #e9f0ff;
+      --red: #cf3d32;
+      --shadow: 0 18px 48px rgba(31, 47, 34, 0.10);
+      --shadow-soft: 0 10px 28px rgba(31, 47, 34, 0.08);
+      --radius: 8px;
+      --container: 1140px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-width: 320px;
+      background:
+        linear-gradient(180deg, rgba(186, 230, 253, 0.88) 0, rgba(234, 247, 255, 0.74) 420px),
+        var(--page);
+      color: var(--ink);
+      font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    img,
+    svg {
+      display: block;
+    }
+
+    .sc-page {
+      overflow: hidden;
+      font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .sc-page,
+    .sc-page * {
+      font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .sc-container {
+      width: min(var(--container), calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .sc-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(234, 247, 255, 0.90);
+      border-bottom: 1px solid rgba(223, 231, 221, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .sc-nav-inner {
+      width: min(1240px, calc(100% - 40px));
+      min-height: 76px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .sc-brand {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      padding: 7px;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.62);
+      box-shadow: 0 10px 26px rgba(31, 47, 34, 0.06);
+    }
+
+    .sc-brand-logo {
+      width: clamp(122px, 13vw, 168px);
+      height: auto;
+      object-fit: contain;
+      display: block;
+      border-radius: 6px;
+      filter: drop-shadow(0 8px 16px rgba(20, 32, 24, 0.12));
+    }
+
+    .sc-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .sc-nav-links a {
+      text-decoration: none;
+    }
+
+    .sc-nav-links a:hover {
+      color: var(--ink);
+    }
+
+    .sc-nav-cta,
+    .sc-btn {
+      display: inline-flex;
+      min-height: 44px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border: 1px solid #d1a900;
+      border-radius: var(--radius);
+      background: var(--accent);
+      color: #11170f;
+      font-family: inherit;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 12px 26px rgba(245, 196, 0, 0.24);
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+      white-space: nowrap;
+    }
+
+    .sc-nav-cta {
+      padding: 0 18px;
+      font-size: 13px;
+    }
+
+    .sc-btn {
+      min-height: 58px;
+      padding: 0 26px;
+      font-size: 15px;
+    }
+
+    .sc-nav-cta:hover,
+    .sc-btn:hover {
+      background: #ffd83d;
+      transform: translateY(-2px);
+      box-shadow: 0 18px 34px rgba(245, 196, 0, 0.30);
+    }
+
+    .sc-btn.secondary {
+      border-color: rgba(20, 32, 24, 0.14);
+      background: #ffffff;
+      box-shadow: none;
+    }
+
+    .sc-btn.secondary:hover {
+      background: var(--surface-soft);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .sc-hero {
+      position: relative;
+      padding: 86px 0 72px;
+    }
+
+    .sc-hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.92fr);
+      align-items: center;
+      gap: 46px;
+    }
+
+    .sc-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 34px;
+      margin-bottom: 20px;
+      padding: 0 12px;
+      border: 1px solid rgba(29, 138, 85, 0.18);
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: #16633f;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .sc-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 0 5px rgba(29, 138, 85, 0.12);
+    }
+
+    .sc-hero h1 {
+      max-width: 690px;
+      font-size: clamp(34px, 4.35vw, 54px);
+      font-weight: 600;
+      line-height: 1.03;
+      letter-spacing: 0;
+    }
+
+    .sc-hero h1 span {
+      display: inline;
+      background: linear-gradient(90deg, #142018 0%, #9a7100 44%, #1d8a55 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .sc-hero-text {
+      max-width: 640px;
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: clamp(16px, 2vw, 19px);
+      font-weight: 500;
+      line-height: 1.8;
+    }
+
+    .sc-hero-text strong {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .sc-hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 34px;
+    }
+
+    .sc-proof-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .sc-proof-pill {
+      display: inline-flex;
+      min-height: 34px;
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(31, 47, 34, 0.05);
+    }
+
+    .sc-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--green);
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex: 0 0 auto;
+    }
+
+    .sc-engine {
+      position: relative;
+      border: 1px solid rgba(20, 32, 24, 0.12);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, #ffffff 0%, #f7fbf3 100%);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .sc-engine::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(20, 32, 24, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(20, 32, 24, 0.04) 1px, transparent 1px);
+      background-size: 34px 34px;
+      pointer-events: none;
+    }
+
+    .sc-engine-top {
+      position: relative;
+      padding: 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .sc-engine-kicker {
+      color: var(--accent-dark);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .sc-engine-title {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .sc-engine-live {
+      min-width: 122px;
+      padding: 8px 10px;
+      border: 1px solid rgba(29, 138, 85, 0.18);
+      border-radius: var(--radius);
+      background: var(--green-soft);
+      color: #16633f;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .sc-engine-body {
+      position: relative;
+      padding: 24px;
+    }
+
+    .sc-engine-status {
+      display: block;
+      margin-bottom: 18px;
+      padding: 13px 14px;
+      border: 1px solid rgba(37, 99, 235, 0.12);
+      border-radius: var(--radius);
+      background: rgba(233, 240, 255, 0.72);
+    }
+
+    .sc-engine-status strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .sc-engine-status span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .sc-flow {
+      display: grid;
+      gap: 10px;
+    }
+
+    .sc-flow-row {
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.78);
+      padding: 12px;
+    }
+
+    .sc-tier {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .sc-tier.one {
+      background: var(--green-soft);
+      color: #16633f;
+    }
+
+    .sc-tier.two {
+      background: var(--blue-soft);
+      color: #1e4db3;
+    }
+
+    .sc-tier.three {
+      background: #fff5c7;
+      color: #805f00;
+    }
+
+    .sc-flow-copy {
+      min-width: 0;
+    }
+
+    .sc-flow-copy strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .sc-flow-copy span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    .sc-band {
+      padding: 34px 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.58);
+    }
+
+    .sc-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .sc-stat {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      padding: 22px;
+      box-shadow: 0 6px 18px rgba(31, 47, 34, 0.04);
+    }
+
+    .sc-stat-number {
+      font-size: clamp(18px, 2.2vw, 24px);
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .sc-stat-label {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .sc-section {
+      padding: 86px 0;
+    }
+
+    .sc-section.alt {
+      background: #ffffff;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .sc-section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.52fr);
+      align-items: end;
+      gap: 42px;
+      margin-bottom: 34px;
+    }
+
+    .sc-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      color: var(--accent-dark);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .sc-label::before {
+      content: "";
+      width: 30px;
+      height: 2px;
+      border-radius: 99px;
+      background: var(--accent);
+    }
+
+    .sc-h2 {
+      max-width: 760px;
+      font-size: clamp(30px, 4vw, 48px);
+      font-weight: 600;
+      line-height: 1.06;
+      letter-spacing: 0;
+    }
+
+    .sc-intro {
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.8;
+    }
+
+    .sc-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .sc-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .sc-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      padding: 28px;
+      box-shadow: 0 6px 18px rgba(31, 47, 34, 0.04);
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .sc-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(183, 133, 0, 0.28);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .sc-icon {
+      width: 44px;
+      height: 44px;
+      margin-bottom: 20px;
+      border-radius: var(--radius);
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      background: linear-gradient(135deg, #fff8cd 0%, #e8f7ef 100%);
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+    }
+
+    .sc-card h3 {
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.32;
+      margin-bottom: 10px;
+    }
+
+    .sc-card p,
+    .sc-card li {
+      color: var(--muted);
+      font-size: 13.5px;
+      font-weight: 500;
+      line-height: 1.75;
+    }
+
+    .sc-card ul {
+      display: grid;
+      gap: 10px;
+      list-style: none;
+      margin-top: 18px;
+    }
+
+    .sc-card li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .sc-card li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      margin-top: 8px;
+      border-radius: 999px;
+      background: var(--green);
+      flex: 0 0 auto;
+    }
+
+    .sc-offer {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .sc-offer-main {
+      border: 1px solid rgba(183, 133, 0, 0.24);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, #ffffff 0%, #fff8d8 48%, #eef8f2 100%);
+      padding: 34px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .sc-offer-main h3 {
+      max-width: 700px;
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 700;
+      line-height: 1.16;
+      margin-bottom: 14px;
+    }
+
+    .sc-offer-main p {
+      max-width: 720px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+
+    .sc-offer-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      list-style: none;
+    }
+
+    .sc-offer-list li {
+      min-height: 70px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      border: 1px solid rgba(20, 32, 24, 0.09);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.68);
+      padding: 14px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .sc-offer-list li::before {
+      content: "✓";
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: var(--green);
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      flex: 0 0 auto;
+    }
+
+    .sc-price-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .sc-price-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      padding: 24px;
+      box-shadow: 0 6px 18px rgba(31, 47, 34, 0.04);
+    }
+
+    .sc-price-label {
+      color: var(--accent-dark);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .sc-price-value {
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 8px;
+    }
+
+    .sc-price-note {
+      color: var(--muted);
+      font-size: 12.5px;
+      font-weight: 500;
+      line-height: 1.65;
+    }
+
+    .sc-tiers {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      counter-reset: tiers;
+    }
+
+    .sc-tier-card {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      padding: 28px;
+      overflow: hidden;
+    }
+
+    .sc-tier-card::before {
+      counter-increment: tiers;
+      content: "Tier " counter(tiers);
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      padding: 0 10px;
+      margin-bottom: 18px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #1e4db3;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .sc-tier-card:first-child::before {
+      background: var(--green-soft);
+      color: #16633f;
+    }
+
+    .sc-tier-card:last-child::before {
+      background: #fff5c7;
+      color: #805f00;
+    }
+
+    .sc-tier-card h3 {
+      font-size: 19px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    .sc-tier-card p {
+      color: var(--muted);
+      font-size: 13.5px;
+      font-weight: 500;
+      line-height: 1.75;
+    }
+
+    .sc-score-line {
+      height: 10px;
+      margin-top: 20px;
+      border-radius: 999px;
+      background: #edf1ed;
+      overflow: hidden;
+    }
+
+    .sc-score-line span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--green), var(--accent));
+    }
+
+    .sc-before-after {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .sc-ba-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      padding: 30px;
+      box-shadow: 0 6px 18px rgba(31, 47, 34, 0.04);
+    }
+
+    .sc-ba-panel.after {
+      border-color: rgba(29, 138, 85, 0.20);
+      background:
+        linear-gradient(135deg, rgba(229, 246, 236, 0.86), rgba(248, 253, 255, 0.94)),
+        #ffffff;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .sc-ba-label {
+      display: inline-flex;
+      min-height: 30px;
+      align-items: center;
+      padding: 0 10px;
+      margin-bottom: 18px;
+      border-radius: 999px;
+      background: #f4f6f3;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+    }
+
+    .sc-ba-panel.after .sc-ba-label {
+      background: var(--green-soft);
+      color: #16633f;
+    }
+
+    .sc-ba-panel h3 {
+      font-size: clamp(22px, 3vw, 32px);
+      font-weight: 700;
+      line-height: 1.14;
+      margin-bottom: 20px;
+    }
+
+    .sc-ba-list {
+      display: grid;
+      gap: 12px;
+      list-style: none;
+    }
+
+    .sc-ba-list li {
+      display: flex;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.65;
+    }
+
+    .sc-ba-list li::before {
+      content: "x";
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: #ffe8e5;
+      color: var(--red);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      flex: 0 0 auto;
+      margin-top: 1px;
+    }
+
+    .sc-ba-panel.after .sc-ba-list li::before {
+      content: "✓";
+      background: var(--green);
+      color: #ffffff;
+    }
+
+    .sc-stack {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .sc-tool {
+      min-height: 104px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-align: center;
+      box-shadow: 0 6px 18px rgba(31, 47, 34, 0.04);
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+    }
+
+    .sc-tool:hover {
+      transform: translateY(-3px);
+      border-color: rgba(37, 99, 235, 0.22);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .sc-tool-logo {
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background: #f8fdff;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .sc-tool-logo img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .sc-tool strong {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .sc-tool span {
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 600;
+      line-height: 1.45;
+    }
+
+
+
+    .sc-workflow-layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.42fr) minmax(0, 1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .sc-workflow-copy,
+    .sc-workflow-card {
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .sc-workflow-copy {
+      padding: 34px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .sc-workflow-copy h3 {
+      font-size: clamp(24px, 2.7vw, 34px);
+      line-height: 1.08;
+      letter-spacing: 0;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .sc-workflow-copy p {
+      color: var(--muted);
+      font-size: 14.5px;
+      font-weight: 500;
+      line-height: 1.8;
+    }
+
+    .sc-workflow-points {
+      display: grid;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .sc-workflow-point {
+      display: flex;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.55;
+    }
+
+    .sc-workflow-point::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      margin-top: 7px;
+      border-radius: 999px;
+      background: var(--green);
+      flex: 0 0 auto;
+    }
+
+    .sc-workflow-card {
+      position: relative;
+      padding: 30px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 8%, rgba(245, 196, 0, 0.10), transparent 25%),
+        #ffffff;
+    }
+
+    .sc-workflow-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(20, 32, 24, 0.10) 1px, transparent 1px);
+      background-size: 10px 10px;
+      mask-image: linear-gradient(180deg, transparent 0, #000 11%, #000 90%, transparent 100%);
+      opacity: 0.42;
+      pointer-events: none;
+    }
+
+    .swf-flow {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 12px;
+    }
+
+    .swf-stage {
+      position: relative;
+      display: grid;
+      grid-template-columns: 68px 1fr;
+      gap: 16px;
+      align-items: stretch;
+      padding: 16px;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.90);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+    }
+
+    .swf-stage:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      left: 49px;
+      bottom: -13px;
+      width: 2px;
+      height: 13px;
+      background: repeating-linear-gradient(
+        to bottom,
+        #b9c8c1 0 3px,
+        transparent 3px 6px
+      );
+    }
+
+    .swf-index {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #142018;
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      justify-self: center;
+    }
+
+    .swf-stage:nth-child(1) .swf-index { background: #12b8c8; }
+    .swf-stage:nth-child(2) .swf-index { background: #2563eb; }
+    .swf-stage:nth-child(3) .swf-index { background: #1d8a55; }
+    .swf-stage:nth-child(4) .swf-index { background: #8b5cf6; }
+    .swf-stage:nth-child(5) .swf-index { background: #b78500; }
+    .swf-stage:nth-child(6) .swf-index { background: #2563eb; }
+    .swf-stage:nth-child(7) .swf-index { background: #101827; }
+
+    .swf-stage-main {
+      min-width: 0;
+    }
+
+    .swf-stage-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 8px;
+      color: #142018;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .swf-stage-title span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .swf-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .swf-logo {
+      min-width: 30px;
+      height: 30px;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid rgba(20, 32, 24, 0.08);
+      border-radius: 8px;
+      background: #ffffff;
+      color: #1d4ed8;
+      font-size: 9px;
+      font-weight: 700;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.06);
+      overflow: hidden;
+      padding: 0 7px;
+    }
+
+    .swf-logo img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .sc-guide {
+      display: grid;
+      grid-template-columns: minmax(0, 1.04fr) minmax(300px, 0.96fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .sc-guide-main,
+    .sc-guide-side {
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background: #ffffff;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .sc-guide-main {
+      padding: 34px;
+      background:
+        linear-gradient(135deg, rgba(207, 238, 255, 0.92), rgba(255, 248, 205, 0.74)),
+        #ffffff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sc-guide-main::after {
+      content: "";
+      position: absolute;
+      inset: auto -18% -28% 38%;
+      height: 150px;
+      background: repeating-linear-gradient(90deg, rgba(37, 99, 235, 0.14) 0 2px, transparent 2px 18px);
+      transform: rotate(-7deg);
+      opacity: 0.64;
+      pointer-events: none;
+    }
+
+    .sc-guide-main > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .sc-guide-main h3 {
+      max-width: 560px;
+      font-size: clamp(28px, 3.6vw, 42px);
+      line-height: 1.06;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .sc-guide-main p {
+      max-width: 650px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.8;
+      margin-bottom: 26px;
+    }
+
+    .sc-guide-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 28px;
+      list-style: none;
+    }
+
+    .sc-guide-list li {
+      display: flex;
+      gap: 10px;
+      min-height: 52px;
+      align-items: center;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.72);
+      padding: 12px 14px;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .sc-guide-list li::before {
+      content: "✓";
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: var(--green);
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      flex: 0 0 auto;
+    }
+
+    .sc-guide-side {
+      padding: 28px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .sc-guide-side h4 {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .sc-guide-side p {
+      color: var(--muted);
+      font-size: 13.5px;
+      font-weight: 500;
+      line-height: 1.75;
+    }
+
+    .sc-guide-preview {
+      display: grid;
+      gap: 8px;
+      padding: 18px;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, #ffffff 0%, #f8fdff 100%);
+    }
+
+    .sc-guide-preview span {
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      border-radius: 7px;
+      background: var(--surface-soft);
+      color: #1e4db3;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .sc-guide-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .sc-comparison {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .sc-table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .sc-table th,
+    .sc-table td {
+      padding: 17px 18px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .sc-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .sc-table th {
+      background: #f8faf5;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    .sc-table td {
+      color: var(--muted);
+      font-weight: 600;
+      line-height: 1.55;
+    }
+
+    .sc-table td:first-child {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .sc-table .is-us {
+      background: #fff9da;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .sc-yes {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .sc-no {
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .sc-faq {
+      max-width: 860px;
+      margin: 0 auto;
+      display: grid;
+      gap: 10px;
+    }
+
+    .sc-faq-item {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .sc-faq-question {
+      width: 100%;
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 0 22px;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    .sc-faq-icon {
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(20, 32, 24, 0.12);
+      border-radius: var(--radius);
+      background: var(--surface-soft);
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      transition: transform 180ms ease, background 180ms ease;
+    }
+
+    .sc-faq-item.is-open .sc-faq-icon {
+      transform: rotate(45deg);
+      background: #fff5c7;
+    }
+
+    .sc-faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 13.5px;
+      font-weight: 500;
+      line-height: 1.8;
+      transition: max-height 220ms ease, padding 180ms ease;
+    }
+
+    .sc-faq-answer p {
+      padding: 0 22px 22px;
+    }
+
+    .sc-faq-item.is-open .sc-faq-answer {
+      max-height: 240px;
+    }
+
+    .sc-final {
+      padding: 86px 0;
+      background:
+        linear-gradient(135deg, rgba(255, 248, 205, 0.86), rgba(229, 246, 236, 0.92)),
+        #ffffff;
+      border-top: 1px solid var(--line);
+    }
+
+    .sc-final-box {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 34px;
+      border: 1px solid rgba(20, 32, 24, 0.12);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.72);
+      padding: 42px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .sc-final h2 {
+      max-width: 720px;
+      font-size: clamp(30px, 4.2vw, 48px);
+      font-weight: 600;
+      line-height: 1.04;
+      margin-bottom: 14px;
+    }
+
+    .sc-final p {
+      max-width: 680px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.8;
+    }
+
+    .sc-footer {
+      background: #142018;
+      color: #ffffff;
+      padding: 34px 0;
+    }
+
+    .sc-footer-inner {
+      width: min(1240px, calc(100% - 40px));
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .sc-footer strong {
+      display: block;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .sc-footer span,
+    .sc-footer a {
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+
+    .sc-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(90deg, rgba(37, 99, 235, 0.08) 1px, transparent 1px),
+        linear-gradient(rgba(37, 99, 235, 0.08) 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: linear-gradient(180deg, black 0%, transparent 82%);
+      pointer-events: none;
+      animation: sc-grid-drift 16s linear infinite;
+    }
+
+    .sc-hero > .sc-container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .sc-signal-rail {
+      max-width: 610px;
+      margin-top: 24px;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background: rgba(248, 253, 255, 0.72);
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(31, 47, 34, 0.06);
+    }
+
+    .sc-signal-track {
+      display: flex;
+      width: max-content;
+      gap: 10px;
+      padding: 10px;
+      animation: sc-marquee 24s linear infinite;
+    }
+
+    .sc-signal-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 12px;
+      border: 1px solid rgba(37, 99, 235, 0.14);
+      border-radius: 999px;
+      background: #ffffff;
+      color: #1e4db3;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .sc-engine {
+      animation: sc-float-panel 6s ease-in-out infinite;
+    }
+
+    .sc-card,
+    .sc-stat,
+    .sc-tier-card,
+    .sc-price-card,
+    .sc-case-card {
+      animation: sc-reveal 700ms ease both;
+    }
+
+    .sc-btn::after,
+    .sc-nav-cta::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.42) 46%, transparent 62%);
+      transform: translateX(-120%);
+      animation: sc-button-shine 3.2s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .sc-nav-cta,
+    .sc-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sc-cases-grid {
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .sc-case-hero {
+      border: 1px solid rgba(37, 99, 235, 0.16);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, rgba(207, 238, 255, 0.92), rgba(255, 248, 205, 0.78)),
+        #f8fdff;
+      padding: 32px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sc-case-hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -15% -22% 22%;
+      height: 130px;
+      background: repeating-linear-gradient(90deg, rgba(37, 99, 235, 0.16) 0 2px, transparent 2px 18px);
+      transform: rotate(-6deg);
+      opacity: 0.65;
+      animation: sc-bars 9s linear infinite;
+    }
+
+    .sc-case-hero > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .sc-case-hero h3 {
+      max-width: 440px;
+      font-size: clamp(24px, 3vw, 36px);
+      font-weight: 700;
+      line-height: 1.12;
+      margin-bottom: 14px;
+    }
+
+    .sc-case-hero p {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.8;
+    }
+
+    .sc-case-kpis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .sc-case-kpi {
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.70);
+      padding: 14px;
+    }
+
+    .sc-case-kpi strong {
+      display: block;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .sc-case-kpi span {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .sc-case-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .sc-case-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      padding: 24px;
+      box-shadow: 0 6px 18px rgba(31, 47, 34, 0.04);
+    }
+
+    .sc-case-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .sc-case-tag {
+      display: inline-flex;
+      min-height: 28px;
+      align-items: center;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #1e4db3;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .sc-case-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .sc-case-card p {
+      color: var(--muted);
+      font-size: 13.5px;
+      font-weight: 500;
+      line-height: 1.75;
+    }
+
+    .sc-card.featured {
+      background:
+        linear-gradient(135deg, rgba(207, 238, 255, 0.72), rgba(255, 248, 205, 0.62)),
+        #ffffff;
+      border-color: rgba(37, 99, 235, 0.16);
+    }
+
+    @keyframes sc-grid-drift {
+      from { background-position: 0 0; }
+      to { background-position: 64px 64px; }
+    }
+
+    @keyframes sc-marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @keyframes sc-float-panel {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes sc-reveal {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes sc-button-shine {
+      0%, 45% { transform: translateX(-120%); }
+      75%, 100% { transform: translateX(120%); }
+    }
+
+    @keyframes sc-bars {
+      from { background-position: 0 0; }
+      to { background-position: 120px 0; }
+    }
+
+    @media (max-width: 980px) {
+      .sc-nav-links {
+        display: none;
+      }
+
+      .sc-hero-grid,
+      .sc-section-head,
+      .sc-offer,
+      .sc-workflow-layout,
+      .sc-guide,
+      .sc-final-box {
+        grid-template-columns: 1fr;
+      }
+
+      .sc-engine {
+        max-width: 640px;
+      }
+
+      .sc-stat-grid,
+      .sc-grid-3,
+      .sc-tiers,
+      .sc-stack,
+      .sc-cases-grid,
+      .sc-before-after {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .sc-cases-grid,
+      .sc-before-after {
+        grid-template-columns: 1fr;
+      }
+
+      .sc-final-box {
+        align-items: start;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .sc-container,
+      .sc-nav-inner,
+      .sc-footer-inner {
+        width: min(100% - 28px, var(--container));
+      }
+
+      .sc-nav-inner {
+        min-height: 68px;
+      }
+
+      .sc-brand-logo {
+        width: 132px;
+      }
+
+      .sc-nav-cta {
+        min-height: 40px;
+        padding: 0 12px;
+        font-size: 12px;
+      }
+
+      .sc-hero {
+        padding: 56px 0 48px;
+      }
+
+      .sc-hero h1 {
+        font-size: clamp(36px, 12vw, 48px);
+      }
+
+      .sc-hero-actions,
+      .sc-btn {
+        width: 100%;
+      }
+
+      .sc-btn {
+        padding: 0 18px;
+      }
+
+      .sc-stat-grid,
+      .sc-grid-2,
+      .sc-grid-3,
+      .sc-tiers,
+      .sc-stack,
+      .sc-guide-list,
+      .sc-offer-list,
+      .sc-case-kpis,
+      .sc-before-after {
+        grid-template-columns: 1fr;
+      }
+
+      .sc-section {
+        padding: 64px 0;
+      }
+
+      .sc-section-head {
+        gap: 18px;
+        margin-bottom: 26px;
+      }
+
+      .sc-card,
+      .sc-offer-main,
+      .sc-workflow-copy,
+      .sc-tier-card,
+      .sc-final-box {
+        padding: 22px;
+      }
+
+      .sc-flow-row {
+        grid-template-columns: 1fr;
+      }
+
+      .sc-engine-top {
+        flex-direction: column;
+      }
+
+      .sc-engine-live {
+        min-width: 0;
+      }
+
+      .sc-workflow-card {
+        padding: 16px;
+      }
+
+      .swf-stage {
+        grid-template-columns: 48px 1fr;
+        gap: 12px;
+        padding: 13px;
+      }
+
+      .swf-stage:not(:last-child)::after {
+        left: 36px;
+      }
+
+      .swf-index {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+      }
+
+      .swf-stage-title {
+        font-size: 13px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sc-page">
+    <header class="sc-nav" aria-label="Navigation principale">
+      <div class="sc-nav-inner">
+        <a class="sc-brand" href="#top" aria-label="Scalensy accueil">
+          <img class="sc-brand-logo" src="data:image/png;base64,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" alt="Scalensy">
+        </a>
+        <nav class="sc-nav-links" aria-label="Sections">
+          <a href="#offre">Offre</a>
+          <a href="#workflow">Workflow</a>
+          <a href="#methode">Méthode</a>
+          <a href="#stack">Stack</a>
+          <a href="#cases">Témoignages</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+        <a class="sc-nav-cta" href="https://www.scalensy.com/reservation">Réserver un appel</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="sc-hero" aria-labelledby="hero-title">
+        <div class="sc-container sc-hero-grid">
+          <div>
+            <div class="sc-eyebrow"><span class="sc-pulse" aria-hidden="true"></span> Moteur outbound pour SaaS B2B</div>
+            <h1 id="hero-title">Générez des rendez-vous qualifiés avec <span>un moteur outbound propriétaire.</span></h1>
+            <p class="sc-hero-text">
+              Scalensy transforme vos sources de prospection en campagnes outbound ciblées : données propres,
+              comptes priorisés, signaux exploitables et CRM synchronisé. <strong>Vous gardez un système documenté, transférable et pilotable par votre équipe.</strong>
+            </p>
+            <div class="sc-hero-actions">
+              <a class="sc-btn" href="https://www.scalensy.com/reservation">Réserver mon appel stratégique →</a>
+              <a class="sc-btn secondary" href="#guide">Télécharger le guide</a>
+            </div>
+            <div class="sc-proof-row" aria-label="Points clés">
+              <span class="sc-proof-pill"><span class="sc-check">✓</span>Lancement cadré</span>
+              <span class="sc-proof-pill"><span class="sc-check">✓</span>Délivrabilité vérifiée</span>
+              <span class="sc-proof-pill"><span class="sc-check">✓</span>Système transféré</span>
+            </div>
+            <div class="sc-signal-rail" aria-label="Signaux surveillés">
+              <div class="sc-signal-track">
+                <span class="sc-signal-pill">Levée de fonds</span>
+                <span class="sc-signal-pill">Recrutement sales</span>
+                <span class="sc-signal-pill">Changement de stack</span>
+                <span class="sc-signal-pill">Activité concurrente</span>
+                <span class="sc-signal-pill">Visiteurs site</span>
+                <span class="sc-signal-pill">Nouveau marché</span>
+                <span class="sc-signal-pill">Levée de fonds</span>
+                <span class="sc-signal-pill">Recrutement sales</span>
+                <span class="sc-signal-pill">Changement de stack</span>
+                <span class="sc-signal-pill">Activité concurrente</span>
+                <span class="sc-signal-pill">Visiteurs site</span>
+                <span class="sc-signal-pill">Nouveau marché</span>
+              </div>
+            </div>
+          </div>
+
+          <aside class="sc-engine" aria-label="Aperçu du moteur outbound Scalensy">
+            <div class="sc-engine-top">
+              <div>
+                <div class="sc-engine-kicker">Outbound engine</div>
+                <div class="sc-engine-title">Marché → priorités → signaux → rendez-vous</div>
+              </div>
+              <div class="sc-engine-live">Système<br>transférable</div>
+            </div>
+            <div class="sc-engine-body">
+              <div class="sc-engine-status">
+                <div>
+                  <strong>Pipeline outbound prêt à activer</strong>
+                  <span>Données propres, priorités nettes, CRM à jour.</span>
+                </div>
+              </div>
+              <div class="sc-flow">
+                <div class="sc-flow-row">
+                  <span class="sc-tier one">Marché</span>
+                  <span class="sc-flow-copy"><strong>Ciblage clarifié</strong><span>Un périmètre net avant toute activation.</span></span>
+                </div>
+                <div class="sc-flow-row">
+                  <span class="sc-tier two">Priorité</span>
+                  <span class="sc-flow-copy"><strong>Effort concentré</strong><span>Les meilleurs comptes passent devant.</span></span>
+                </div>
+                <div class="sc-flow-row">
+                  <span class="sc-tier three">Pilotage</span>
+                  <span class="sc-flow-copy"><strong>Activation suivie</strong><span>Campagnes, monitoring et CRM restent alignés.</span></span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="sc-band" aria-label="Chiffres clés">
+        <div class="sc-container sc-stat-grid">
+          <div class="sc-stat">
+            <div class="sc-stat-number">Données propres</div>
+            <div class="sc-stat-label">un marché consolidé avant activation</div>
+          </div>
+          <div class="sc-stat">
+            <div class="sc-stat-number">Comptes priorisés</div>
+            <div class="sc-stat-label">un scoring clair par niveau d'effort</div>
+          </div>
+          <div class="sc-stat">
+            <div class="sc-stat-number">Signaux exploitables</div>
+            <div class="sc-stat-label">des angles de message plus précis</div>
+          </div>
+          <div class="sc-stat">
+            <div class="sc-stat-number">CRM synchronisé</div>
+            <div class="sc-stat-label">des statuts et prochaines actions propres</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sc-section" id="offre">
+        <div class="sc-container">
+          <div class="sc-section-head">
+            <div>
+              <div class="sc-label">L'offre</div>
+              <h2 class="sc-h2">Un moteur outbound complet, construit dans votre stack.</h2>
+            </div>
+              <p class="sc-intro">Pas une campagne isolée. Scalensy met en place le système complet : ciblage, priorisation, activation, monitoring et reporting.</p>
+          </div>
+
+          <div class="sc-offer">
+            <div class="sc-offer-main">
+              <h3>Vous ne récupérez pas une campagne isolée. Vous récupérez une machine outbound complète.</h3>
+              <p>Chaque lancement démarre par une lecture claire du marché, puis par une priorisation des comptes à travailler. Les campagnes sont ensuite construites autour du contexte réel des prospects et suivies dans votre stack.</p>
+              <ul class="sc-offer-list">
+                <li>Marché et priorités clarifiés avant lancement</li>
+                <li>Base de prospection propre, exploitable et documentée</li>
+                <li>Délivrabilité et monitoring contrôlés avant volume</li>
+                <li>Campagnes adaptées au contexte des comptes</li>
+                <li>Dashboard hebdomadaire avec recommandations concrètes</li>
+                <li>Documentation finale pour reprise en interne</li>
+              </ul>
+            </div>
+
+            <div class="sc-price-stack">
+              <div class="sc-price-card">
+                <div class="sc-price-label">Qualification</div>
+                <div class="sc-price-value">RDV cadrés</div>
+                <div class="sc-price-note">Chaque rendez-vous suit des critères validés avec votre équipe avant le lancement.</div>
+              </div>
+              <div class="sc-price-card">
+                <div class="sc-price-label">Activation</div>
+                <div class="sc-price-value">Canaux surveillés</div>
+                <div class="sc-price-note">Infrastructure, vérifications et monitoring sont contrôlés avant la montée en volume.</div>
+              </div>
+              <div class="sc-price-card">
+                <div class="sc-price-label">Handoff</div>
+                <div class="sc-price-value">Système remis</div>
+                <div class="sc-price-note">Workflows, séquences, listes, dashboards et documentation restent dans votre stack.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <section class="sc-section alt" id="workflow">
+        <div class="sc-container">
+          <div class="sc-section-head">
+            <div>
+              <div class="sc-label">Workflow</div>
+              <h2 class="sc-h2">Du marché flou à un système outbound pilotable.</h2>
+            </div>
+            <p class="sc-intro">Scalensy transforme une base dispersée en système clair : comptes priorisés, signaux lisibles, campagnes suivies et CRM à jour.</p>
+          </div>
+
+          <div class="sc-workflow-layout">
+            <article class="sc-workflow-copy">
+              <h3>La méthode reste simple côté client : savoir qui cibler, pourquoi, et quoi activer ensuite.</h3>
+              <p>Vous gardez la visibilité sur les décisions importantes sans devoir gérer toute la plomberie opérationnelle. Le système rend les priorités, les signaux et les prochaines actions faciles à lire.</p>
+              <div class="sc-workflow-points">
+                <div class="sc-workflow-point">Priorités claires avant lancement.</div>
+                <div class="sc-workflow-point">Signaux transformés en angles de message.</div>
+                <div class="sc-workflow-point">Monitoring et CRM alignés après activation.</div>
+              </div>
+            </article>
+
+            <article class="sc-workflow-card" aria-label="Workflow outbound Scalensy">
+              <div class="swf-flow">
+                <div class="swf-stage">
+                  <div class="swf-index">01</div>
+                  <div class="swf-stage-main">
+                    <div class="swf-stage-title">Marché cadré <span>qui cibler et pourquoi</span></div>
+                    <div class="swf-tools">
+                      <span class="swf-logo"><img src="https://www.google.com/s2/favicons?domain=linkedin.com&sz=128" alt="LinkedIn"></span>
+                      <span class="swf-logo"><img src="https://www.google.com/s2/favicons?domain=apollo.io&sz=128" alt="Apollo"></span>
+                      <span class="swf-logo"><img src="https://www.google.com/s2/favicons?domain=crunchbase.com&sz=128" alt="Crunchbase"></span>
+                      <span class="swf-logo">+</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="swf-stage">
+                  <div class="swf-index">02</div>
+                  <div class="swf-stage-main">
+                    <div class="swf-stage-title">Base propre <span>moins de bruit, plus de comptes utiles</span></div>
+                    <div class="swf-tools">
+                      <span class="swf-logo">CSV</span>
+                      <span class="swf-logo"><img src="https://www.google.com/s2/favicons?domain=n8n.io&sz=128" alt="n8n"></span>
+                      <span class="swf-logo">API</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="swf-stage">
+                  <div class="swf-index">03</div>
+                  <div class="swf-stage-main">
+                    <div class="swf-stage-title">Comptes priorisés <span>effort concentré sur les meilleurs comptes</span></div>
+                    <div class="swf-tools">
+                      <span class="swf-logo">T1</span>
+                      <span class="swf-logo">T2</span>
+                      <span class="swf-logo">T3</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="swf-stage">
+                  <div class="swf-index">04</div>
+                  <div class="swf-stage-main">
+                    <div class="swf-stage-title">Signaux exploitables <span>timing et angles d'approche</span></div>
+                    <div class="swf-tools">
+                      <span class="swf-logo"><img src="https://www.google.com/s2/favicons?domain=prontohq.com&sz=128" alt="Pronto"></span>
+                      <span class="swf-logo"><img src="https://www.google.com/s2/favicons?domain=mantiks.io&sz=128" alt="Mantiks"></span>
+                      <span class="swf-logo"><img src="https://www.google.com/s2/favicons?domain=clay.com&sz=128" alt="Clay"></span>
+                      <span class="swf-logo"><img src="https://www.google.com/s2/favicons?domain=getcargo.io&sz=128" alt="Cargo"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="swf-stage">
+                  <div class="swf-index">05</div>
+                  <div class="swf-stage-main">
+                    <div class="swf-stage-title">Campagnes suivies <span>monitoring, CRM et prochaines actions</span></div>
+                    <div class="swf-tools">
+                      <span class="swf-logo"><img src="https://www.google.com/s2/favicons?domain=smartlead.ai&sz=128" alt="Smartlead"></span>
+                      <span class="swf-logo"><img src="https://www.google.com/s2/favicons?domain=lemlist.com&sz=128" alt="Lemlist"></span>
+                      <span class="swf-logo"><img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=128" alt="CRM"></span>
+                      <span class="swf-logo"><img src="https://www.google.com/s2/favicons?domain=n8n.io&sz=128" alt="n8n"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="sc-section" id="guide">
+        <div class="sc-container">
+          <div class="sc-section-head">
+            <div>
+              <div class="sc-label">Guide gratuit</div>
+              <h2 class="sc-h2">Le détail pratique est dans le guide gratuit.</h2>
+            </div>
+            <p class="sc-intro">La landing reste volontairement simple. Le guide donne la checklist de départ pour construire une base plus fiable avant d'activer vos campagnes.</p>
+          </div>
+
+          <div class="sc-guide">
+            <article class="sc-guide-main">
+              <h3>Le playbook pour éviter les bases de prospection inutilisables.</h3>
+              <p>Une ressource courte pour comprendre quoi vérifier avant de lancer : qualité des sources, nettoyage, enrichissement utile, priorisation et signaux à surveiller.</p>
+              <ul class="sc-guide-list">
+                <li>Identifier les bonnes sources de comptes</li>
+                <li>Dédupliquer et nettoyer la donnée</li>
+                <li>Garder seulement les champs utiles</li>
+                <li>Prioriser les comptes à travailler</li>
+              </ul>
+              <a class="sc-btn" href="https://www.scalensy.com/guide">Recevoir le guide gratuit →</a>
+            </article>
+
+            <aside class="sc-guide-side" aria-label="Aperçu du guide gratuit">
+              <div>
+                <h4>Ce que le guide vous aide à éviter</h4>
+                <p>Des bases trop larges, des données sales, des comptes non priorisés et des campagnes lancées sans contexte clair.</p>
+              </div>
+              <div class="sc-guide-preview" aria-hidden="true">
+                <span>01 · Choisir les bonnes sources</span>
+                <span>02 · Nettoyer avant d'activer</span>
+                <span>03 · Garder les champs utiles</span>
+                <span>04 · Prioriser les comptes</span>
+                <span>05 · Repérer les signaux</span>
+              </div>
+              <div class="sc-guide-note"><span class="sc-check">✓</span> Guide pratique, simple à appliquer</div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="sc-section" id="avant-apres">
+        <div class="sc-container">
+          <div class="sc-section-head">
+            <div>
+              <div class="sc-label">Avant / après</div>
+              <h2 class="sc-h2">La différence entre lancer des campagnes et piloter un vrai moteur outbound.</h2>
+            </div>
+            <p class="sc-intro">Le contraste est simple : moins de bruit, plus de comptes priorisés, et une boucle d'amélioration que votre équipe peut reprendre.</p>
+          </div>
+
+          <div class="sc-before-after">
+            <article class="sc-ba-panel">
+              <span class="sc-ba-label">Avant Scalensy</span>
+              <h3>Des campagnes difficiles à lire, donc difficiles à améliorer.</h3>
+              <ul class="sc-ba-list">
+                <li>Listes statiques construites sans logique de priorité claire.</li>
+                <li>Messages génériques, peu reliés au timing réel du compte.</li>
+                <li>Délivrabilité suivie trop tard, après les premiers problèmes.</li>
+                <li>Reporting dispersé entre outils, sans prochaine action évidente.</li>
+              </ul>
+            </article>
+
+            <article class="sc-ba-panel after">
+              <span class="sc-ba-label">Après Scalensy</span>
+              <h3>Un système qui priorise, lance, mesure et se transfère.</h3>
+              <ul class="sc-ba-list">
+                <li>Comptes classés par tiers avec scoring et critères de qualification.</li>
+                <li>Séquences et canaux construits autour d'angles testables.</li>
+                <li>Infrastructure, vérifications et monitoring contrôlés avant montée en volume.</li>
+                <li>Dashboard hebdomadaire avec apprentissages, métriques et recommandations.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="sc-section" id="methode">
+        <div class="sc-container">
+          <div class="sc-section-head">
+            <div>
+              <div class="sc-label">Méthode</div>
+              <h2 class="sc-h2">Une méthode claire sans complexifier votre équipe.</h2>
+            </div>
+            <p class="sc-intro">Vous voyez les décisions utiles, pas toute la plomberie. Le système sert à prioriser, apprendre et corriger plus vite.</p>
+          </div>
+
+          <div class="sc-grid-3">
+            <article class="sc-card">
+              <div class="sc-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+              </div>
+              <h3>1. Clarté marché</h3>
+              <p>On identifie les segments qui méritent d'être testés en priorité, avec des critères simples à expliquer à l'équipe.</p>
+            </article>
+
+            <article class="sc-card">
+              <div class="sc-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16V9"/><path d="M13 16V7"/><path d="M18 16v-4"/></svg>
+              </div>
+              <h3>2. Priorisation</h3>
+              <p>Les meilleurs comptes passent devant pour éviter de disperser les efforts sur une base trop large ou trop hétérogène.</p>
+            </article>
+
+            <article class="sc-card">
+              <div class="sc-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 10-13h-7l1-7Z"/></svg>
+              </div>
+              <h3>3. Timing</h3>
+              <p>Les signaux aident à trouver un angle d'approche plus naturel, au lieu de contacter tout le monde avec le même message.</p>
+            </article>
+
+            <article class="sc-card">
+              <div class="sc-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15V8a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v7"/><path d="m3 8 9 6 9-6"/><path d="M7 19h10"/></svg>
+              </div>
+              <h3>4. Délivrabilité</h3>
+              <p>L'infrastructure est surveillée avant d'augmenter le volume, pour protéger les domaines et garder une lecture fiable des résultats.</p>
+            </article>
+
+            <article class="sc-card">
+              <div class="sc-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h10"/><path d="M4 18h7"/><path d="m16 16 2 2 4-4"/></svg>
+              </div>
+              <h3>5. Apprentissage</h3>
+              <p>Les campagnes sont testées pour comprendre ce qui génère des conversations, puis les angles faibles sont ajustés rapidement.</p>
+            </article>
+
+            <article class="sc-card">
+              <div class="sc-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M8 17l3-5 4 3 5-8"/><path d="M4 19h16"/></svg>
+              </div>
+              <h3>6. Reporting</h3>
+              <p>Chaque semaine, le système met en évidence les actions à corriger, renforcer ou arrêter.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="sc-section">
+        <div class="sc-container">
+          <div class="sc-section-head">
+            <div>
+              <div class="sc-label">Priorisation</div>
+              <h2 class="sc-h2">Tous les comptes ne méritent pas le même effort.</h2>
+            </div>
+            <p class="sc-intro">La priorisation évite de traiter le marché comme une masse uniforme. Les meilleurs comptes passent devant, les segments faibles sont testés avec moins de charge commerciale.</p>
+          </div>
+
+          <div class="sc-tiers">
+            <article class="sc-tier-card">
+              <h3>Compte idéal</h3>
+              <p>Très bon fit, timing intéressant, décisionnaire identifiable, potentiel de deal clair.</p>
+              <div class="sc-score-line" aria-hidden="true"><span style="width: 96%"></span></div>
+            </article>
+            <article class="sc-tier-card">
+              <h3>Bon fit</h3>
+              <p>Compte pertinent mais moins urgent. On teste une séquence dédiée ou un angle plus pédagogique.</p>
+              <div class="sc-score-line" aria-hidden="true"><span style="width: 74%"></span></div>
+            </article>
+            <article class="sc-tier-card">
+              <h3>Dans le TAM</h3>
+              <p>Compte compatible mais priorité faible. Il reste utile pour apprentissage, volume contrôlé ou future relance.</p>
+              <div class="sc-score-line" aria-hidden="true"><span style="width: 52%"></span></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="sc-section alt" id="stack">
+        <div class="sc-container">
+          <div class="sc-section-head">
+            <div>
+              <div class="sc-label">Stack outbound</div>
+              <h2 class="sc-h2">Une stack transparente, installée dans votre environnement.</h2>
+            </div>
+            <p class="sc-intro">Nous utilisons des outils reconnus pour sourcer, enrichir, vérifier, séquencer et mesurer vos campagnes. Le système reste documenté et transférable.</p>
+          </div>
+
+          <div class="sc-stack">
+            <div class="sc-tool">
+              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=n8n.io&sz=128" alt=""></span>
+              <strong>n8n</strong>
+              <span>Automatisation</span>
+            </div>
+            <div class="sc-tool">
+              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=smartlead.ai&sz=128" alt=""></span>
+              <strong>Smartlead</strong>
+              <span>Séquences</span>
+            </div>
+            <div class="sc-tool">
+              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=anthropic.com&sz=128" alt=""></span>
+              <strong>Claude Code</strong>
+              <span>Build interne</span>
+            </div>
+            <div class="sc-tool">
+              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=millionverifier.com&sz=128" alt=""></span>
+              <strong>MillionVerifier</strong>
+              <span>Vérification</span>
+            </div>
+            <div class="sc-tool">
+              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=bounceban.com&sz=128" alt=""></span>
+              <strong>BounceBan</strong>
+              <span>Catch-all</span>
+            </div>
+            <div class="sc-tool">
+              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=serper.dev&sz=128" alt=""></span>
+              <strong>Serper</strong>
+              <span>Recherche web</span>
+            </div>
+            <div class="sc-tool">
+              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=exa.ai&sz=128" alt=""></span>
+              <strong>Exa</strong>
+              <span>Détection signaux</span>
+            </div>
+            <div class="sc-tool">
+              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=clay.com&sz=128" alt=""></span>
+              <strong>Clay</strong>
+              <span>Enrichissement</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sc-section">
+        <div class="sc-container">
+          <div class="sc-section-head">
+            <div>
+              <div class="sc-label">Comparaison</div>
+              <h2 class="sc-h2">Pourquoi ce modèle est plus sain qu'une agence classique.</h2>
+            </div>
+            <p class="sc-intro">La valeur reste chez vous à la fin : listes, séquences, workflows, dashboards et documentation sont pensés pour être repris en interne.</p>
+          </div>
+
+          <div class="sc-comparison">
+            <table class="sc-table">
+              <thead>
+                <tr>
+                  <th>Critère</th>
+                  <th>Scalensy</th>
+                  <th>Agence outbound classique</th>
+                  <th>Recrutement SDR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Lancement</td>
+                  <td class="is-us">Lancement après validation du TAM</td>
+                  <td>4 à 6 semaines</td>
+                  <td>3 à 6 mois avant une routine stable</td>
+                </tr>
+                <tr>
+                  <td>Système transféré</td>
+                  <td class="is-us"><span class="sc-yes">Oui</span>, documenté dans vos outils</td>
+                  <td><span class="sc-no">Rarement</span>, actifs gardés par l'agence</td>
+                  <td><span class="sc-yes">Oui</span>, mais après investissement lourd</td>
+                </tr>
+                <tr>
+                  <td>Exploitation des signaux</td>
+                  <td class="is-us"><span class="sc-yes">Oui</span>, signaux utilisés dans le scoring et les messages</td>
+                  <td>Souvent list-based</td>
+                  <td>Dépend du niveau du profil</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="sc-section alt" id="cases">
+        <div class="sc-container">
+          <div class="sc-section-head">
+            <div>
+              <div class="sc-label">Témoignages</div>
+              <h2 class="sc-h2">Ce que les équipes retiennent après un système outbound bien construit.</h2>
+            </div>
+            <p class="sc-intro">Des retours centrés sur ce que le système change concrètement : priorisation, contexte des messages et autonomie de l'équipe.</p>
+          </div>
+
+          <div class="sc-cases-grid">
+            <article class="sc-case-hero">
+              <div class="sc-case-tag">Retour client</div>
+              <h3>“On comprend enfin quels comptes prioriser et pourquoi.”</h3>
+              <p>Le principal gain n'est pas seulement le lancement des campagnes : c'est la lisibilité du système. Les comptes sont scorés, les signaux sont explicites et chaque séquence a une hypothèse claire.</p>
+              <div class="sc-case-kpis">
+                <div class="sc-case-kpi"><strong>Clarté</strong><span>sur les segments à attaquer</span></div>
+                <div class="sc-case-kpi"><strong>Focus</strong><span>sur les comptes les plus prometteurs</span></div>
+                <div class="sc-case-kpi"><strong>Autonomie</strong><span>grâce à la documentation</span></div>
+              </div>
+            </article>
+
+            <div class="sc-case-list">
+              <article class="sc-case-card">
+                <div class="sc-case-card-top">
+                  <h3>“Le scoring a changé notre façon de prospecter.”</h3>
+                  <span class="sc-case-tag">Priorisation</span>
+                </div>
+                <p>Avant, tous les comptes se ressemblaient. Avec une logique Tier 1, Tier 2, Tier 3, l'équipe sait où concentrer ses efforts et quels angles tester.</p>
+              </article>
+
+              <article class="sc-case-card">
+                <div class="sc-case-card-top">
+                  <h3>“Les messages partent avec un vrai contexte.”</h3>
+                  <span class="sc-case-tag">Signaux</span>
+                </div>
+                <p>Les signaux donnent une raison concrète de contacter chaque compte : recrutement, changement d'outil, activité concurrente ou actualité marché.</p>
+              </article>
+
+              <article class="sc-case-card">
+                <div class="sc-case-card-top">
+                  <h3>“Le système ne disparaît pas à la fin.”</h3>
+                  <span class="sc-case-tag">Handoff</span>
+                </div>
+                <p>Les workflows, listes, séquences, dashboards et règles de scoring restent exploitables par l'équipe après la phase de construction.</p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sc-section alt" id="faq">
+        <div class="sc-container">
+          <div class="sc-section-head">
+            <div>
+              <div class="sc-label">FAQ</div>
+              <h2 class="sc-h2">Questions fréquentes.</h2>
+            </div>
+            <p class="sc-intro">Les points essentiels avant de décider si Scalensy peut construire votre moteur outbound.</p>
+          </div>
+
+          <div class="sc-faq">
+            <article class="sc-faq-item is-open">
+              <button class="sc-faq-question" type="button" aria-expanded="true">
+                Qu'est-ce qu'un rendez-vous qualifié ?
+                <span class="sc-faq-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="sc-faq-answer">
+                <p>Un rendez-vous qualifié respecte les critères validés avant lancement : bon rôle, bonne entreprise, correspondance avec vos critères, invitation calendrier acceptée, prospect net-new et meeting réellement tenu.</p>
+              </div>
+            </article>
+
+            <article class="sc-faq-item">
+              <button class="sc-faq-question" type="button" aria-expanded="false">
+                Est-ce uniquement pour le marché français ?
+                <span class="sc-faq-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="sc-faq-answer">
+                <p>Le système peut être adapté selon le marché ciblé, à condition que le TAM soit suffisant et que les segments soient clairement définis avant le lancement.</p>
+              </div>
+            </article>
+
+            <article class="sc-faq-item">
+              <button class="sc-faq-question" type="button" aria-expanded="false">
+                Pourquoi cadrer le marché avant de lancer ?
+                <span class="sc-faq-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="sc-faq-answer">
+                <p>Un système outbound a besoin d'un marché assez large pour tester plusieurs segments sans recycler les mêmes comptes. Si le périmètre est trop étroit, Scalensy peut d'abord travailler le mapping marché avant le lancement des campagnes.</p>
+              </div>
+            </article>
+
+            <article class="sc-faq-item">
+              <button class="sc-faq-question" type="button" aria-expanded="false">
+                Que récupère mon équipe à la fin ?
+                <span class="sc-faq-icon" aria-hidden="true">+</span>
+              </button>
+              <div class="sc-faq-answer">
+                <p>Les listes, workflows, séquences, dashboards, règles de scoring, documentation et recommandations. Le système vit dans vos outils, pas chez Scalensy.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="sc-final">
+        <div class="sc-container">
+          <div class="sc-final-box">
+            <div>
+              <div class="sc-eyebrow"><span class="sc-pulse" aria-hidden="true"></span> Diagnostic outbound</div>
+              <h2>Construisons votre moteur outbound.</h2>
+              <p>Sur l'appel, on valide votre marché, vos signaux d'achat, votre capacité de volume et les premières campagnes à lancer. Si le fit est bon, Scalensy construit un système outbound clair, documenté et transférable.</p>
+            </div>
+            <a class="sc-btn" href="https://www.scalensy.com/reservation">Réserver mon appel gratuit →</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="sc-footer">
+      <div class="sc-footer-inner">
+        <div>
+          <strong>Scalensy</strong>
+          <span>Moteurs outbound propriétaires pour SaaS B2B.</span>
+        </div>
+        <span>© 2026 Scalensy. Tous droits réservés.</span>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.querySelectorAll(".sc-faq-question").forEach((button) => {
+      button.addEventListener("click", () => {
+        const item = button.closest(".sc-faq-item");
+        const isOpen = item.classList.toggle("is-open");
+        button.setAttribute("aria-expanded", String(isOpen));
+      });
+    });
+  </script>
+</body>
+</html>
