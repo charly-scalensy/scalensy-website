@@ -1,0 +1,1650 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preview animations stack - Scalensy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --page: #eaf7ff;
+      --surface: #fbfdf8;
+      --ink: #142018;
+      --muted: #5f6d63;
+      --line: #dfe7dd;
+      --green: #2f8f5b;
+      --green-soft: #e8f5ed;
+      --blue: #2454c6;
+      --blue-soft: #e9f0ff;
+      --accent: #f5c400;
+      --shadow: 0 18px 48px rgba(31, 47, 34, 0.10);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(186, 230, 253, 0.88), rgba(234, 247, 255, 0.76) 420px),
+        var(--page);
+      font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main {
+      width: min(1160px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 56px 0 80px;
+    }
+
+    .head {
+      max-width: 780px;
+      margin-bottom: 34px;
+    }
+
+    .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .label::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    h1 {
+      max-width: 720px;
+      margin: 12px 0 12px;
+      font-size: clamp(36px, 5vw, 64px);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.7;
+      font-weight: 600;
+    }
+
+    .preview-grid {
+      display: grid;
+      gap: 22px;
+    }
+
+    .preview-card {
+      min-height: 430px;
+      border: 1px solid rgba(20, 32, 24, 0.12);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .preview-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 24px 26px;
+      border-bottom: 1px solid rgba(20, 32, 24, 0.10);
+    }
+
+    .preview-top h2 {
+      margin: 0 0 6px;
+      font-size: 21px;
+      line-height: 1.2;
+    }
+
+    .preview-top p {
+      max-width: 650px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+
+    .tag {
+      height: fit-content;
+      white-space: nowrap;
+      border: 1px solid rgba(47, 143, 91, 0.18);
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green);
+      padding: 8px 11px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .stage {
+      position: relative;
+      min-height: 340px;
+      padding: 28px;
+      display: grid;
+      place-items: center;
+      background-image: radial-gradient(rgba(20, 32, 24, 0.08) 1px, transparent 1px);
+      background-size: 12px 12px;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: 10px;
+      background: #ffffff;
+      box-shadow: 0 10px 24px rgba(31, 47, 34, 0.10);
+    }
+
+    .logo img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .hub {
+      position: relative;
+      z-index: 2;
+      width: min(290px, 72vw);
+      min-height: 118px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      border: 1px solid rgba(20, 32, 24, 0.14);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 18px 44px rgba(31, 47, 34, 0.12);
+      padding: 22px;
+    }
+
+    .hub strong {
+      display: block;
+      font-size: 18px;
+      line-height: 1.25;
+    }
+
+    .hub span {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .orbit {
+      width: min(560px, 86vw);
+      height: 292px;
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+
+    .orbit-ring {
+      position: absolute;
+      inset: 0;
+      border: 1px dashed rgba(36, 84, 198, 0.22);
+      border-radius: 999px;
+      animation: spin 22s linear infinite;
+    }
+
+    .orbit-item {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform:
+        rotate(var(--angle))
+        translateX(min(250px, 38vw))
+        rotate(calc(var(--angle) * -1));
+      animation: orbit 22s linear infinite;
+      animation-delay: var(--delay);
+    }
+
+    .orbit-item .logo {
+      animation: counter-orbit 22s linear infinite;
+      animation-delay: var(--delay);
+    }
+
+    .flow {
+      width: min(920px, 100%);
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .flow-step {
+      position: relative;
+      min-height: 142px;
+      display: grid;
+      place-items: center;
+      gap: 10px;
+      text-align: center;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.94);
+      padding: 16px 10px;
+      overflow: hidden;
+    }
+
+    .flow-step::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(245, 196, 0, 0.18), transparent);
+      transform: translateX(-120%);
+      animation: scan 4.8s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 220ms);
+    }
+
+    .flow-step strong,
+    .flow-step .logo {
+      position: relative;
+      z-index: 1;
+    }
+
+    .flow-step strong {
+      font-size: 12.5px;
+      line-height: 1.3;
+    }
+
+    .flow-line {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      top: 50%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(36, 84, 198, 0.18), transparent);
+    }
+
+    .categories {
+      width: min(860px, 100%);
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .category {
+      min-height: 202px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.94);
+      padding: 18px;
+      box-shadow: 0 12px 28px rgba(31, 47, 34, 0.06);
+      animation: lift 5.4s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 260ms);
+    }
+
+    .category strong {
+      font-size: 15px;
+    }
+
+    .category span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.5;
+    }
+
+    .category-logos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .category .logo {
+      width: 38px;
+      height: 38px;
+    }
+
+    .category .logo img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .radar {
+      position: relative;
+      width: min(580px, 86vw);
+      aspect-ratio: 1 / 1;
+      max-height: 330px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle, rgba(255, 255, 255, 0.96) 0 18%, transparent 19%),
+        repeating-radial-gradient(circle, rgba(36, 84, 198, 0.12) 0 1px, transparent 1px 70px);
+      overflow: hidden;
+    }
+
+    .radar::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: conic-gradient(from 0deg, rgba(47, 143, 91, 0.34), transparent 30%, transparent);
+      animation: spin 4.8s linear infinite;
+    }
+
+    .radar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent calc(50% - 1px), rgba(20, 32, 24, 0.08) 50%, transparent calc(50% + 1px)),
+        linear-gradient(0deg, transparent calc(50% - 1px), rgba(20, 32, 24, 0.08) 50%, transparent calc(50% + 1px));
+    }
+
+    .radar .hub {
+      width: 210px;
+      min-height: 92px;
+      border-radius: 999px;
+      padding: 16px;
+    }
+
+    .radar-signal {
+      position: absolute;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: 999px;
+      background: #ffffff;
+      padding: 7px 10px 7px 7px;
+      box-shadow: 0 10px 24px rgba(31, 47, 34, 0.11);
+      font-size: 11px;
+      font-weight: 800;
+      animation: pulse 3.2s ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    .radar-signal .logo {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      box-shadow: none;
+    }
+
+    .radar-signal .logo img {
+      width: 18px;
+      height: 18px;
+    }
+
+    .radar-signal:nth-child(2) { top: 15%; left: 12%; }
+    .radar-signal:nth-child(3) { top: 22%; right: 8%; }
+    .radar-signal:nth-child(4) { bottom: 22%; left: 8%; }
+    .radar-signal:nth-child(5) { bottom: 14%; right: 12%; }
+
+    .signal-board {
+      width: min(900px, 100%);
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .signal-feed,
+    .signal-action {
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.94);
+      padding: 18px;
+      box-shadow: 0 12px 28px rgba(31, 47, 34, 0.06);
+    }
+
+    .feed-item {
+      display: grid;
+      grid-template-columns: 38px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(20, 32, 24, 0.08);
+      animation: feed-highlight 5.6s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 520ms);
+    }
+
+    .feed-item:last-child {
+      border-bottom: 0;
+    }
+
+    .feed-item .logo {
+      width: 38px;
+      height: 38px;
+      box-shadow: none;
+    }
+
+    .feed-item strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .feed-item span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11.5px;
+      font-weight: 650;
+    }
+
+    .score {
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green);
+      padding: 6px 8px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .signal-action {
+      display: grid;
+      align-content: center;
+      gap: 14px;
+    }
+
+    .action-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .action-bar {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(36, 84, 198, 0.10);
+      overflow: hidden;
+    }
+
+    .action-bar span {
+      display: block;
+      width: var(--w);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--green));
+      animation: fill 4.8s ease-in-out infinite;
+    }
+
+    .pipeline-loop {
+      width: min(880px, 100%);
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      position: relative;
+    }
+
+    .pipeline-loop::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 8%;
+      right: 8%;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(36, 84, 198, 0.08), rgba(47, 143, 91, 0.34), rgba(36, 84, 198, 0.08));
+    }
+
+    .loop-card {
+      position: relative;
+      z-index: 1;
+      min-height: 190px;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 12px;
+      text-align: center;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.96);
+      padding: 18px;
+    }
+
+    .loop-card::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      border: 2px solid transparent;
+      animation: border-pass 5.2s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 420ms);
+    }
+
+    .loop-card strong {
+      font-size: 14px;
+    }
+
+    .loop-card span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .constellation {
+      width: min(780px, 100%);
+      min-height: 290px;
+      position: relative;
+    }
+
+    .constellation .hub {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 240px;
+      min-height: 108px;
+    }
+
+    .star-tool {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: 999px;
+      background: #ffffff;
+      padding: 7px 11px 7px 7px;
+      box-shadow: 0 12px 26px rgba(31, 47, 34, 0.08);
+      font-size: 11px;
+      font-weight: 800;
+      animation: twinkle 4.2s ease-in-out infinite;
+      animation-delay: var(--delay);
+    }
+
+    .star-tool .logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      box-shadow: none;
+    }
+
+    .star-tool .logo img {
+      width: 19px;
+      height: 19px;
+    }
+
+    .star-tool:nth-child(2) { top: 8%; left: 11%; }
+    .star-tool:nth-child(3) { top: 10%; right: 12%; }
+    .star-tool:nth-child(4) { top: 43%; left: 0; }
+    .star-tool:nth-child(5) { top: 44%; right: 0; }
+    .star-tool:nth-child(6) { bottom: 7%; left: 17%; }
+    .star-tool:nth-child(7) { bottom: 7%; right: 18%; }
+
+    .constellation-line {
+      position: absolute;
+      inset: 58px 80px;
+      border: 1px dashed rgba(36, 84, 198, 0.18);
+      border-radius: 999px;
+      animation: spin 28s linear infinite;
+    }
+
+    .launch-panel {
+      width: min(900px, 100%);
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .launch-column,
+    .campaign-card {
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.94);
+      padding: 18px;
+      box-shadow: 0 12px 28px rgba(31, 47, 34, 0.06);
+    }
+
+    .launch-column {
+      display: grid;
+      gap: 10px;
+    }
+
+    .launch-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid rgba(20, 32, 24, 0.08);
+      border-radius: 999px;
+      padding: 8px 10px;
+      background: #ffffff;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      animation: pass-right 5.8s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 360ms);
+    }
+
+    .launch-pill .logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      box-shadow: none;
+    }
+
+    .launch-pill .logo img {
+      width: 19px;
+      height: 19px;
+    }
+
+    .campaign-card {
+      display: grid;
+      align-content: center;
+      gap: 14px;
+    }
+
+    .campaign-card h3 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.15;
+    }
+
+    .campaign-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 650;
+      line-height: 1.6;
+    }
+
+    .campaign-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .campaign-actions span {
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      padding: 8px 10px;
+      font-size: 11.5px;
+      font-weight: 800;
+    }
+
+    .hybrid-flow {
+      width: min(960px, 100%);
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+      position: relative;
+    }
+
+    .hybrid-flow::before {
+      content: "";
+      position: absolute;
+      left: 5%;
+      right: 5%;
+      top: 54px;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(36, 84, 198, 0.12), rgba(47, 143, 91, 0.34), rgba(36, 84, 198, 0.12));
+    }
+
+    .hybrid-step {
+      position: relative;
+      z-index: 1;
+      min-height: 214px;
+      display: grid;
+      align-content: start;
+      justify-items: center;
+      gap: 10px;
+      text-align: center;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.96);
+      padding: 18px 12px;
+      overflow: hidden;
+    }
+
+    .hybrid-step::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent, rgba(233, 240, 255, 0.55));
+      opacity: 0;
+      animation: step-glow 6s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 420ms);
+    }
+
+    .hybrid-step > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hybrid-step strong {
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .hybrid-step span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .hybrid-mini {
+      width: 100%;
+      display: grid;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .hybrid-mini div {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      border: 1px solid rgba(20, 32, 24, 0.08);
+      border-radius: 999px;
+      background: #ffffff;
+      padding: 6px 8px;
+      color: var(--muted);
+      font-size: 10.5px;
+      font-weight: 800;
+    }
+
+    .hybrid-mini em {
+      color: var(--green);
+      font-style: normal;
+    }
+
+    .split-workbench {
+      width: min(940px, 100%);
+      display: grid;
+      grid-template-columns: .95fr 1.05fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .workbench-steps,
+    .workbench-feed {
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.94);
+      padding: 18px;
+      box-shadow: 0 12px 28px rgba(31, 47, 34, 0.06);
+    }
+
+    .workbench-steps {
+      display: grid;
+      gap: 10px;
+    }
+
+    .workbench-step {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 11px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid rgba(20, 32, 24, 0.08);
+      border-radius: var(--radius);
+      background: #ffffff;
+      animation: feed-highlight 5.4s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 430ms);
+    }
+
+    .workbench-step b {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-size: 12px;
+    }
+
+    .workbench-step strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.3;
+    }
+
+    .workbench-step span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+    }
+
+    .workbench-feed {
+      display: grid;
+      gap: 10px;
+      align-content: center;
+    }
+
+    .compact-system {
+      width: min(960px, 100%);
+      display: grid;
+      grid-template-columns: 1fr 1.25fr 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .compact-lane {
+      display: grid;
+      gap: 10px;
+    }
+
+    .compact-card,
+    .compact-core {
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 12px 28px rgba(31, 47, 34, 0.06);
+      padding: 14px;
+    }
+
+    .compact-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      animation: pass-right 5.6s ease-in-out infinite;
+      animation-delay: calc(var(--i) * 360ms);
+    }
+
+    .compact-card .logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      box-shadow: none;
+      flex: 0 0 auto;
+    }
+
+    .compact-card .logo img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .compact-core {
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 12px;
+      text-align: center;
+      min-height: 242px;
+      background:
+        radial-gradient(circle at center, rgba(47, 143, 91, 0.13), transparent 44%),
+        rgba(255, 255, 255, 0.96);
+    }
+
+    .compact-core h3 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.1;
+    }
+
+    .compact-core p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 650;
+      line-height: 1.6;
+    }
+
+    .compact-score {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .compact-score span {
+      border-radius: 999px;
+      background: var(--green-soft);
+      color: var(--green);
+      padding: 7px 9px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .logo-marquee {
+      width: min(1000px, 100%);
+      display: grid;
+      gap: 34px;
+      text-align: center;
+      overflow: hidden;
+      padding: 28px 0 34px;
+      border-radius: var(--radius);
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.98), transparent 12%, transparent 88%, rgba(255, 255, 255, 0.98)),
+        rgba(255, 255, 255, 0.56);
+    }
+
+    .logo-marquee h3 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      margin: 0;
+      color: #101418;
+      font-size: clamp(26px, 3vw, 40px);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .logo-marquee h3::before,
+    .logo-marquee h3::after {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(20, 32, 24, 0.14);
+      flex: 0 0 auto;
+    }
+
+    .marquee-window {
+      overflow: hidden;
+      padding: 6px 0;
+      mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    }
+
+    .marquee-track {
+      display: flex;
+      align-items: center;
+      width: max-content;
+      gap: 64px;
+      animation: marquee 30s linear infinite;
+    }
+
+    .marquee-item {
+      min-width: max-content;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 72px;
+      padding: 0 6px;
+    }
+
+    .brand-logo-card {
+      min-width: 158px;
+      height: 72px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      border-radius: 10px;
+    }
+
+    .brand-logo-card.dark {
+      background: #111827;
+      padding: 12px 18px;
+    }
+
+    .brand-logo-card img {
+      width: auto;
+      height: 38px;
+      max-width: 178px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .brand-logo-card.tall img {
+      height: 46px;
+    }
+
+    .brand-mark {
+      min-width: 142px;
+      height: 54px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #15181d;
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+
+    .brand-symbol {
+      width: 38px;
+      height: 38px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 10px;
+      color: #ffffff;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 0;
+      flex: 0 0 auto;
+    }
+
+    .brand-n8n {
+      color: #101418;
+      font-weight: 800;
+    }
+
+    .brand-n8n .brand-symbol {
+      width: 46px;
+      background: #ea4b71;
+      border-radius: 999px;
+      font-size: 15px;
+    }
+
+    .brand-lemlist .brand-symbol { background: #3467ff; }
+    .brand-happier { color: #111827; }
+    .brand-happier .brand-symbol { background: #13b8a6; border-radius: 999px; font-size: 17px; }
+    .brand-trigify { color: #15181d; }
+    .brand-trigify .brand-symbol { background: #ec149c; }
+    .brand-instantly { color: #1683ff; }
+    .brand-instantly .brand-symbol { background: #1683ff; border-radius: 999px; }
+    .brand-clay { color: #15181d; font-weight: 800; }
+    .brand-clay .brand-symbol { background: linear-gradient(135deg, #111827, #f59e0b 70%, #38bdf8); }
+    .brand-claude { color: #111827; }
+    .brand-claude .brand-symbol { background: #d97757; border-radius: 999px; font-size: 18px; }
+    .brand-serper { color: #111827; }
+    .brand-serper .brand-symbol { background: #111827; font-size: 15px; }
+    .brand-verifier { color: #111827; font-size: 24px; }
+    .brand-verifier .brand-symbol { background: #19b76b; font-size: 16px; }
+    .brand-bounceban { color: #111827; font-size: 25px; }
+    .brand-bounceban .brand-symbol { background: #4f46e5; font-size: 16px; }
+    .brand-hubspot { color: #263342; }
+    .brand-hubspot .brand-symbol { background: #ff5c35; border-radius: 999px; font-size: 16px; }
+
+    .brand-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-left: 2px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes orbit {
+      to {
+        transform:
+          rotate(calc(var(--angle) + 360deg))
+          translateX(min(250px, 38vw))
+          rotate(calc((var(--angle) + 360deg) * -1));
+      }
+    }
+
+    @keyframes counter-orbit {
+      to { transform: rotate(-360deg); }
+    }
+
+    @keyframes scan {
+      0%, 42% { transform: translateX(-120%); }
+      72%, 100% { transform: translateX(120%); }
+    }
+
+    @keyframes lift {
+      0%, 100% { transform: translateY(0); border-color: rgba(20, 32, 24, 0.10); }
+      50% { transform: translateY(-6px); border-color: rgba(47, 143, 91, 0.24); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.055); }
+    }
+
+    @keyframes feed-highlight {
+      0%, 100% { opacity: .72; transform: translateX(0); }
+      50% { opacity: 1; transform: translateX(6px); }
+    }
+
+    @keyframes fill {
+      0%, 100% { transform: translateX(-14%); }
+      50% { transform: translateX(0); }
+    }
+
+    @keyframes border-pass {
+      0%, 100% { border-color: transparent; }
+      50% { border-color: rgba(47, 143, 91, 0.38); }
+    }
+
+    @keyframes twinkle {
+      0%, 100% { transform: translateY(0); opacity: .82; }
+      50% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    @keyframes pass-right {
+      0%, 100% { transform: translateX(0); border-color: rgba(20, 32, 24, 0.08); }
+      50% { transform: translateX(8px); border-color: rgba(47, 143, 91, 0.24); }
+    }
+
+    @keyframes step-glow {
+      0%, 100% { opacity: 0; }
+      48%, 58% { opacity: 1; }
+    }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media (max-width: 820px) {
+      main {
+        width: min(100% - 24px, 1160px);
+        padding-top: 34px;
+      }
+
+      .preview-top {
+        flex-direction: column;
+        padding: 20px;
+      }
+
+      .stage {
+        min-height: 420px;
+        padding: 20px;
+      }
+
+      .flow,
+      .categories,
+      .pipeline-loop,
+      .signal-board,
+      .launch-panel,
+      .hybrid-flow,
+      .split-workbench,
+      .compact-system {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .signal-board,
+      .launch-panel,
+      .split-workbench,
+      .compact-system {
+        grid-template-columns: 1fr;
+      }
+
+      .logo-marquee {
+        gap: 26px;
+      }
+
+      .marquee-track {
+        gap: 42px;
+        animation-duration: 20s;
+      }
+
+      .orbit {
+        height: 340px;
+      }
+
+      .orbit-item {
+        transform:
+          rotate(var(--angle))
+          translateX(min(162px, 36vw))
+          rotate(calc(var(--angle) * -1));
+      }
+
+      @keyframes orbit {
+        to {
+          transform:
+            rotate(calc(var(--angle) + 360deg))
+            translateX(min(162px, 36vw))
+            rotate(calc((var(--angle) + 360deg) * -1));
+        }
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="head">
+      <div class="label">Preview stack</div>
+      <h1>12 pistes d'animation pour la section Stack.</h1>
+      <p class="intro">Ces maquettes servent uniquement à comparer le ressenti visuel. La meilleure peut ensuite remplacer la grille actuelle dans la page principale.</p>
+    </div>
+
+    <div class="preview-grid">
+      <section class="preview-card">
+        <div class="preview-top">
+          <div>
+            <h2>Option 12 - Bandeau de logos défilant</h2>
+            <p>La version la plus simple : un titre clair et les outils qui défilent en continu. C'est proche de ton screenshot, propre et facile à intégrer.</p>
+          </div>
+          <span class="tag">Simple</span>
+        </div>
+        <div class="stage">
+          <div class="logo-marquee">
+            <h3>Nous déployons les meilleurs outils sales tech</h3>
+            <div class="marquee-window" aria-label="Outils sales tech Scalensy">
+              <div class="marquee-track">
+                <div class="marquee-item"><span class="brand-logo-card"><img src="https://n8n.io/brandguidelines/logo-dark.svg" alt="n8n"></span></div>
+                <div class="marquee-item"><span class="brand-logo-card tall"><img src="https://web-assets.lemlist.com/prod/a327b952f10c989e4c701d945b21bc4f" alt="lemlist"></span></div>
+                <div class="marquee-item"><span class="brand-logo-card dark"><img src="https://happierleads.com/images/general/logo-white.svg" alt="Happierleads"></span></div>
+                <div class="marquee-item"><span class="brand-logo-card"><img src="https://cdn.prod.website-files.com/682cef37e0f7339201cb1007/682d03bf8d591b22a3458e71_trigify_io_full_logo_orange_end.svg" alt="Trigify.io"></span></div>
+                <div class="marquee-item"><span class="brand-logo-card"><img src="https://cdn.prod.website-files.com/63860c8c65e7bef4a1eeebeb/68bfbb700e2932c8884be3ee_Instantly%20Logo%202%20%281%29.svg" alt="Instantly"></span></div>
+                <div class="marquee-item"><span class="brand-logo-card"><img src="https://cdn.prod.website-files.com/61477f2c24a826836f969afe/6778506d788ebf16fef48551_Clay%20primary%20logo.avif" alt="Clay"></span></div>
+                <div class="marquee-item"><span class="brand-logo-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Claude_AI_logo.svg" alt="Claude"></span></div>
+                <div class="marquee-item"><span class="brand-logo-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/HubSpot%20Logo.svg" alt="HubSpot"></span></div>
+                <div class="marquee-item" aria-hidden="true"><span class="brand-logo-card"><img src="https://n8n.io/brandguidelines/logo-dark.svg" alt=""></span></div>
+                <div class="marquee-item" aria-hidden="true"><span class="brand-logo-card tall"><img src="https://web-assets.lemlist.com/prod/a327b952f10c989e4c701d945b21bc4f" alt=""></span></div>
+                <div class="marquee-item" aria-hidden="true"><span class="brand-logo-card dark"><img src="https://happierleads.com/images/general/logo-white.svg" alt=""></span></div>
+                <div class="marquee-item" aria-hidden="true"><span class="brand-logo-card"><img src="https://cdn.prod.website-files.com/682cef37e0f7339201cb1007/682d03bf8d591b22a3458e71_trigify_io_full_logo_orange_end.svg" alt=""></span></div>
+                <div class="marquee-item" aria-hidden="true"><span class="brand-logo-card"><img src="https://cdn.prod.website-files.com/63860c8c65e7bef4a1eeebeb/68bfbb700e2932c8884be3ee_Instantly%20Logo%202%20%281%29.svg" alt=""></span></div>
+                <div class="marquee-item" aria-hidden="true"><span class="brand-logo-card"><img src="https://cdn.prod.website-files.com/61477f2c24a826836f969afe/6778506d788ebf16fef48551_Clay%20primary%20logo.avif" alt=""></span></div>
+                <div class="marquee-item" aria-hidden="true"><span class="brand-logo-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Claude_AI_logo.svg" alt=""></span></div>
+                <div class="marquee-item" aria-hidden="true"><span class="brand-logo-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/HubSpot%20Logo.svg" alt=""></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview-card">
+        <div class="preview-top">
+          <div>
+            <h2>Option 1 - Outils en orbite</h2>
+            <p>Effet “moteur” très visuel : les outils gravitent autour du système outbound. Impact fort, mais un peu plus décoratif.</p>
+          </div>
+          <span class="tag">Visuel fort</span>
+        </div>
+        <div class="stage">
+          <div class="orbit">
+            <div class="orbit-ring"></div>
+            <div class="hub">
+              <strong>Système outbound Scalensy</strong>
+              <span>Signaux, données, scoring et campagnes synchronisés.</span>
+            </div>
+            <div class="orbit-item" style="--angle: 0deg; --delay: 0s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=n8n.io&sz=128" alt="n8n"></span></div>
+            <div class="orbit-item" style="--angle: 45deg; --delay: -2.75s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=lemlist.com&sz=128" alt="Lemlist"></span></div>
+            <div class="orbit-item" style="--angle: 90deg; --delay: -5.5s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=clay.com&sz=128" alt="Clay"></span></div>
+            <div class="orbit-item" style="--angle: 135deg; --delay: -8.25s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=happierleads.com&sz=128" alt="Happierleads"></span></div>
+            <div class="orbit-item" style="--angle: 180deg; --delay: -11s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=serper.dev&sz=128" alt="Serper"></span></div>
+            <div class="orbit-item" style="--angle: 225deg; --delay: -13.75s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=millionverifier.com&sz=128" alt="MillionVerifier"></span></div>
+            <div class="orbit-item" style="--angle: 270deg; --delay: -16.5s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=bounceban.com&sz=128" alt="BounceBan"></span></div>
+            <div class="orbit-item" style="--angle: 315deg; --delay: -19.25s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=128" alt="HubSpot"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview-card">
+        <div class="preview-top">
+          <div>
+            <h2>Option 2 - Flux par étapes</h2>
+            <p>La plus claire : on comprend le rôle de chaque outil dans le chemin de la donnée jusqu'à la campagne.</p>
+          </div>
+          <span class="tag">Recommandée</span>
+        </div>
+        <div class="stage">
+          <div class="flow-line"></div>
+          <div class="flow">
+            <div class="flow-step" style="--i: 0;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=serper.dev&sz=128" alt="Serper"></span><strong>Recherche marché</strong></div>
+            <div class="flow-step" style="--i: 1;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=happierleads.com&sz=128" alt="Happierleads"></span><strong>Signaux visiteurs</strong></div>
+            <div class="flow-step" style="--i: 2;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=clay.com&sz=128" alt="Clay"></span><strong>Enrichissement</strong></div>
+            <div class="flow-step" style="--i: 3;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=millionverifier.com&sz=128" alt="MillionVerifier"></span><strong>Vérification</strong></div>
+            <div class="flow-step" style="--i: 4;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=lemlist.com&sz=128" alt="Lemlist"></span><strong>Campagnes</strong></div>
+            <div class="flow-step" style="--i: 5;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=128" alt="HubSpot"></span><strong>CRM</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview-card">
+        <div class="preview-top">
+          <div>
+            <h2>Option 3 - Catégories animées</h2>
+            <p>Plus sobre et premium : les outils sont regroupés par usage, avec une micro-animation douce.</p>
+          </div>
+          <span class="tag">Premium</span>
+        </div>
+        <div class="stage">
+          <div class="categories">
+            <div class="category" style="--i: 0;">
+              <div><strong>Détection</strong><br><span>Signaux visiteurs, intention et timing.</span></div>
+              <div class="category-logos">
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=happierleads.com&sz=128" alt="Happierleads"></span>
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=serper.dev&sz=128" alt="Serper"></span>
+              </div>
+            </div>
+            <div class="category" style="--i: 1;">
+              <div><strong>Données</strong><br><span>Enrichissement, emails, validation.</span></div>
+              <div class="category-logos">
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=clay.com&sz=128" alt="Clay"></span>
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=millionverifier.com&sz=128" alt="MillionVerifier"></span>
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=bounceban.com&sz=128" alt="BounceBan"></span>
+              </div>
+            </div>
+            <div class="category" style="--i: 2;">
+              <div><strong>Activation</strong><br><span>Séquences et automatisations.</span></div>
+              <div class="category-logos">
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=lemlist.com&sz=128" alt="Lemlist"></span>
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=n8n.io&sz=128" alt="n8n"></span>
+              </div>
+            </div>
+            <div class="category" style="--i: 3;">
+              <div><strong>Pilotage</strong><br><span>CRM, suivi et transmission.</span></div>
+              <div class="category-logos">
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=128" alt="HubSpot"></span>
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=attio.com&sz=128" alt="Attio"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview-card">
+        <div class="preview-top">
+          <div>
+            <h2>Option 4 - Radar de signaux</h2>
+            <p>La plus alignée avec le positionnement “signal” : le radar détecte des événements exploitables autour du système.</p>
+          </div>
+          <span class="tag">Signal-first</span>
+        </div>
+        <div class="stage">
+          <div class="radar">
+            <div class="hub">
+              <strong>Signaux détectés</strong>
+              <span>Priorisation et activation.</span>
+            </div>
+            <div class="radar-signal" style="--delay: 0s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=happierleads.com&sz=128" alt="Happierleads"></span>Visite site</div>
+            <div class="radar-signal" style="--delay: .4s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=linkedin.com&sz=128" alt="LinkedIn"></span>Recrutement</div>
+            <div class="radar-signal" style="--delay: .8s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=serper.dev&sz=128" alt="Serper"></span>Actualité</div>
+            <div class="radar-signal" style="--delay: 1.2s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=clay.com&sz=128" alt="Clay"></span>Fit ICP</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview-card">
+        <div class="preview-top">
+          <div>
+            <h2>Option 5 - Feed de signaux priorisés</h2>
+            <p>Une vue plus business : les outils alimentent un flux de signaux, puis les comptes sont scorés avant activation.</p>
+          </div>
+          <span class="tag">Très clair</span>
+        </div>
+        <div class="stage">
+          <div class="signal-board">
+            <div class="signal-feed">
+              <div class="feed-item" style="--i: 0;">
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=happierleads.com&sz=128" alt="Happierleads"></span>
+                <div><strong>Compte actif sur le site</strong><span>3 visites pricing en 7 jours</span></div>
+                <span class="score">92</span>
+              </div>
+              <div class="feed-item" style="--i: 1;">
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=linkedin.com&sz=128" alt="LinkedIn"></span>
+                <div><strong>Recrutement sales</strong><span>Ouverture d'un poste SDR</span></div>
+                <span class="score">84</span>
+              </div>
+              <div class="feed-item" style="--i: 2;">
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=serper.dev&sz=128" alt="Serper"></span>
+                <div><strong>Actualité marché</strong><span>Nouveau segment lancé</span></div>
+                <span class="score">77</span>
+              </div>
+              <div class="feed-item" style="--i: 3;">
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=clay.com&sz=128" alt="Clay"></span>
+                <div><strong>Fit ICP confirmé</strong><span>Stack et taille d'équipe alignées</span></div>
+                <span class="score">88</span>
+              </div>
+            </div>
+            <div class="signal-action">
+              <div>
+                <div class="action-line"><span>Fit ICP</span><strong>92%</strong></div>
+                <div class="action-bar"><span style="--w: 92%;"></span></div>
+              </div>
+              <div>
+                <div class="action-line"><span>Timing</span><strong>84%</strong></div>
+                <div class="action-bar"><span style="--w: 84%;"></span></div>
+              </div>
+              <div>
+                <div class="action-line"><span>Intent</span><strong>77%</strong></div>
+                <div class="action-bar"><span style="--w: 77%;"></span></div>
+              </div>
+              <div class="hub">
+                <strong>Compte à activer</strong>
+                <span>Angle recommandé : croissance sales + preuve marché.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview-card">
+        <div class="preview-top">
+          <div>
+            <h2>Option 9 - Flux avec signaux scorés</h2>
+            <p>Le meilleur mélange entre option 2 et option 5 : une lecture en étapes, avec des signaux et scores visibles à chaque moment clé.</p>
+          </div>
+          <span class="tag">Hybride</span>
+        </div>
+        <div class="stage">
+          <div class="hybrid-flow">
+            <div class="hybrid-step" style="--i: 0;">
+              <span class="logo"><img src="https://www.google.com/s2/favicons?domain=serper.dev&sz=128" alt="Serper"></span>
+              <strong>Marché cible</strong>
+              <span>Segments ICP et concurrents.</span>
+              <div class="hybrid-mini">
+                <div>Segment SaaS <em>fit</em></div>
+                <div>Nouveau marché <em>72</em></div>
+              </div>
+            </div>
+            <div class="hybrid-step" style="--i: 1;">
+              <span class="logo"><img src="https://www.google.com/s2/favicons?domain=happierleads.com&sz=128" alt="Happierleads"></span>
+              <strong>Signaux détectés</strong>
+              <span>Visites, intention, timing.</span>
+              <div class="hybrid-mini">
+                <div>Visite pricing <em>92</em></div>
+                <div>Recrutement sales <em>84</em></div>
+              </div>
+            </div>
+            <div class="hybrid-step" style="--i: 2;">
+              <span class="logo"><img src="https://www.google.com/s2/favicons?domain=clay.com&sz=128" alt="Clay"></span>
+              <strong>Enrichissement</strong>
+              <span>Données propres et vérifiées.</span>
+              <div class="hybrid-mini">
+                <div>Email validé <em>ok</em></div>
+                <div>Stack détectée <em>fit</em></div>
+              </div>
+            </div>
+            <div class="hybrid-step" style="--i: 3;">
+              <span class="logo"><img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=128" alt="HubSpot"></span>
+              <strong>Scoring</strong>
+              <span>Comptes classés par priorité.</span>
+              <div class="hybrid-mini">
+                <div>Tier 1 <em>24</em></div>
+                <div>Tier 2 <em>61</em></div>
+              </div>
+            </div>
+            <div class="hybrid-step" style="--i: 4;">
+              <span class="logo"><img src="https://www.google.com/s2/favicons?domain=lemlist.com&sz=128" alt="Lemlist"></span>
+              <strong>Campagnes</strong>
+              <span>Message lié au contexte.</span>
+              <div class="hybrid-mini">
+                <div>Angle message <em>prêt</em></div>
+                <div>CRM suivi <em>on</em></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview-card">
+        <div class="preview-top">
+          <div>
+            <h2>Option 10 - Étapes + tableau de signaux</h2>
+            <p>À gauche, le workflow reste simple. À droite, on montre les signaux concrets qui alimentent le scoring.</p>
+          </div>
+          <span class="tag">Lisible</span>
+        </div>
+        <div class="stage">
+          <div class="split-workbench">
+            <div class="workbench-steps">
+              <div class="workbench-step" style="--i: 0;"><b>1</b><div><strong>Collecter</strong><span>Marché, CRM, visiteurs.</span></div></div>
+              <div class="workbench-step" style="--i: 1;"><b>2</b><div><strong>Détecter</strong><span>Intentions et événements.</span></div></div>
+              <div class="workbench-step" style="--i: 2;"><b>3</b><div><strong>Scorer</strong><span>Fit ICP, timing, intensité.</span></div></div>
+              <div class="workbench-step" style="--i: 3;"><b>4</b><div><strong>Activer</strong><span>Séquence et angle message.</span></div></div>
+            </div>
+            <div class="workbench-feed">
+              <div class="feed-item" style="--i: 0;">
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=happierleads.com&sz=128" alt="Happierleads"></span>
+                <div><strong>Visite site répétée</strong><span>Page pricing + page intégrations</span></div>
+                <span class="score">92</span>
+              </div>
+              <div class="feed-item" style="--i: 1;">
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=linkedin.com&sz=128" alt="LinkedIn"></span>
+                <div><strong>Équipe commerciale en croissance</strong><span>2 postes ouverts ce mois-ci</span></div>
+                <span class="score">86</span>
+              </div>
+              <div class="feed-item" style="--i: 2;">
+                <span class="logo"><img src="https://www.google.com/s2/favicons?domain=clay.com&sz=128" alt="Clay"></span>
+                <div><strong>Fit ICP validé</strong><span>Industrie, taille et stack alignées</span></div>
+                <span class="score">89</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview-card">
+        <div class="preview-top">
+          <div>
+            <h2>Option 11 - Système compact signaux → scoring → campagnes</h2>
+            <p>Une version plus courte, probablement la plus facile à intégrer dans la section Stack sans allonger la page.</p>
+          </div>
+          <span class="tag">Intégrable</span>
+        </div>
+        <div class="stage">
+          <div class="compact-system">
+            <div class="compact-lane">
+              <div class="compact-card" style="--i: 0;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=serper.dev&sz=128" alt="Serper"></span>Analyse marché</div>
+              <div class="compact-card" style="--i: 1;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=happierleads.com&sz=128" alt="Happierleads"></span>Visiteurs site</div>
+              <div class="compact-card" style="--i: 2;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=linkedin.com&sz=128" alt="LinkedIn"></span>Recrutement sales</div>
+            </div>
+            <div class="compact-core">
+              <h3>Signaux activables</h3>
+              <p>Les outils détectent les comptes où le fit ICP, l'intention et le timing se croisent.</p>
+              <div class="compact-score">
+                <span>Fit 92</span>
+                <span>Intent 84</span>
+                <span>Timing 88</span>
+              </div>
+            </div>
+            <div class="compact-lane">
+              <div class="compact-card" style="--i: 3;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=clay.com&sz=128" alt="Clay"></span>Données enrichies</div>
+              <div class="compact-card" style="--i: 4;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=lemlist.com&sz=128" alt="Lemlist"></span>Campagne Lemlist</div>
+              <div class="compact-card" style="--i: 5;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=128" alt="HubSpot"></span>Suivi CRM</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview-card">
+        <div class="preview-top">
+          <div>
+            <h2>Option 6 - Boucle pipeline</h2>
+            <p>Une version simple et structurée : la stack devient une boucle continue entre données, signaux, scoring et campagnes.</p>
+          </div>
+          <span class="tag">Système</span>
+        </div>
+        <div class="stage">
+          <div class="pipeline-loop">
+            <div class="loop-card" style="--i: 0;">
+              <span class="logo"><img src="https://www.google.com/s2/favicons?domain=serper.dev&sz=128" alt="Serper"></span>
+              <strong>Sources</strong>
+              <span>Marché, comptes, visiteurs et CRM.</span>
+            </div>
+            <div class="loop-card" style="--i: 1;">
+              <span class="logo"><img src="https://www.google.com/s2/favicons?domain=happierleads.com&sz=128" alt="Happierleads"></span>
+              <strong>Signaux</strong>
+              <span>Timing, intention et événements détectés.</span>
+            </div>
+            <div class="loop-card" style="--i: 2;">
+              <span class="logo"><img src="https://www.google.com/s2/favicons?domain=clay.com&sz=128" alt="Clay"></span>
+              <strong>Scoring</strong>
+              <span>Fit ICP, données enrichies et priorités.</span>
+            </div>
+            <div class="loop-card" style="--i: 3;">
+              <span class="logo"><img src="https://www.google.com/s2/favicons?domain=lemlist.com&sz=128" alt="Lemlist"></span>
+              <strong>Activation</strong>
+              <span>Campagnes Lemlist et suivi CRM.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview-card">
+        <div class="preview-top">
+          <div>
+            <h2>Option 7 - Constellation d'outils</h2>
+            <p>Une direction plus élégante : chaque outil reste lisible, relié à un centre “système outbound”.</p>
+          </div>
+          <span class="tag">Clean</span>
+        </div>
+        <div class="stage">
+          <div class="constellation">
+            <div class="constellation-line"></div>
+            <div class="hub">
+              <strong>Stack connectée</strong>
+              <span>Chaque outil sert une étape du système.</span>
+            </div>
+            <div class="star-tool" style="--delay: 0s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=n8n.io&sz=128" alt="n8n"></span>n8n</div>
+            <div class="star-tool" style="--delay: .2s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=lemlist.com&sz=128" alt="Lemlist"></span>Lemlist</div>
+            <div class="star-tool" style="--delay: .4s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=happierleads.com&sz=128" alt="Happierleads"></span>Happierleads</div>
+            <div class="star-tool" style="--delay: .6s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=clay.com&sz=128" alt="Clay"></span>Clay</div>
+            <div class="star-tool" style="--delay: .8s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=millionverifier.com&sz=128" alt="MillionVerifier"></span>Verifier</div>
+            <div class="star-tool" style="--delay: 1s;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=hubspot.com&sz=128" alt="HubSpot"></span>CRM</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="preview-card">
+        <div class="preview-top">
+          <div>
+            <h2>Option 8 - Des signaux vers la campagne</h2>
+            <p>Une animation orientée résultat : les signaux entrent à gauche, puis ressortent en campagne contextualisée.</p>
+          </div>
+          <span class="tag">Activation</span>
+        </div>
+        <div class="stage">
+          <div class="launch-panel">
+            <div class="launch-column">
+              <div class="launch-pill" style="--i: 0;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=happierleads.com&sz=128" alt="Happierleads"></span>Visite pricing</div>
+              <div class="launch-pill" style="--i: 1;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=linkedin.com&sz=128" alt="LinkedIn"></span>Recrutement sales</div>
+              <div class="launch-pill" style="--i: 2;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=serper.dev&sz=128" alt="Serper"></span>Actualité marché</div>
+              <div class="launch-pill" style="--i: 3;"><span class="logo"><img src="https://www.google.com/s2/favicons?domain=clay.com&sz=128" alt="Clay"></span>Fit ICP validé</div>
+            </div>
+            <div class="campaign-card">
+              <span class="logo"><img src="https://www.google.com/s2/favicons?domain=lemlist.com&sz=128" alt="Lemlist"></span>
+              <h3>Campagne contextualisée</h3>
+              <p>Les comptes prioritaires sont activés avec un angle lié au signal détecté et suivis dans le CRM.</p>
+              <div class="campaign-actions">
+                <span>Angle message</span>
+                <span>Séquence Lemlist</span>
+                <span>Suivi CRM</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Scalensy - Moteur outbound pour SaaS B2B</title>
-<meta name="description" content="Scalensy construit votre système outbound de A à Z : marché ciblé, données propres, comptes priorisés, campagnes activées et CRM synchronisé.">
+<meta name="description" content="Scalensy construit votre système outbound de A à Z : marché ciblé, signaux détectés, données propres, comptes priorisés, campagnes activées et CRM synchronisé.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
@@ -1113,6 +1113,145 @@
       line-height: 1.45;
     }
 
+    .sc-logo-marquee {
+      display: grid;
+      gap: 28px;
+      overflow: hidden;
+      padding: 30px 0 34px;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: var(--radius);
+      background:
+        radial-gradient(circle at 50% 0, rgba(245, 196, 0, 0.10), transparent 34%),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.98), transparent 12%, transparent 88%, rgba(255, 255, 255, 0.98)),
+        rgba(255, 255, 255, 0.72);
+      box-shadow: var(--shadow-soft);
+      text-align: center;
+    }
+
+    .sc-logo-marquee-head {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 22px;
+    }
+
+    .sc-logo-marquee-kicker {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: var(--accent-dark);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.1px;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+
+    .sc-logo-marquee-kicker::before,
+    .sc-logo-marquee-kicker::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(183, 133, 0, 0.28);
+      flex: 0 0 auto;
+    }
+
+    .sc-logo-marquee h3 {
+      margin: 0;
+      color: var(--ink);
+      font-size: clamp(24px, 2.6vw, 34px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .sc-logo-marquee p {
+      max-width: 610px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 650;
+      line-height: 1.65;
+    }
+
+    .sc-logo-marquee-window {
+      overflow: hidden;
+      padding: 2px 0 6px;
+      mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    }
+
+    .sc-logo-marquee-track {
+      display: flex;
+      align-items: center;
+      width: max-content;
+      gap: 64px;
+      animation: sc-marquee 30s linear infinite;
+    }
+
+    .sc-logo-item {
+      min-width: max-content;
+      min-height: 72px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 6px;
+    }
+
+    .sc-logo-card {
+      min-width: 158px;
+      height: 72px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      border-radius: 10px;
+    }
+
+    .sc-logo-card.dark {
+      background: #111827;
+      padding: 12px 18px;
+    }
+
+    .sc-logo-card img {
+      width: auto;
+      height: 38px;
+      max-width: 178px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .sc-logo-card.tall img {
+      height: 46px;
+    }
+
+    .sc-sales-nav-logo {
+      gap: 9px;
+      color: #0a66c2;
+      font-size: 21px;
+      font-weight: 800;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .sc-sales-nav-mark {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 5px;
+      background: #0a66c2;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.6px;
+    }
+
 
 
     .sc-workflow-layout {
@@ -1190,7 +1329,7 @@
       display: grid;
       grid-template-columns: 34px 1fr;
       gap: 12px;
-      align-items: start;
+      align-items: center;
       padding: 13px;
       border: 1px solid rgba(37, 99, 235, 0.10);
       border-radius: var(--radius);
@@ -1207,7 +1346,10 @@
       color: var(--blue);
       font-size: 15px;
       font-weight: 700;
+      line-height: 1;
       box-shadow: 0 8px 16px rgba(31, 47, 34, 0.06);
+      align-self: center;
+      justify-self: center;
     }
 
     .sc-signal-benefit strong {
@@ -1218,7 +1360,7 @@
       line-height: 1.35;
     }
 
-    .sc-signal-benefit span {
+    .sc-signal-benefit div span {
       display: block;
       margin-top: 3px;
       color: var(--muted);
@@ -1393,6 +1535,10 @@
 
     .sc-map-node {
       min-height: 76px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     .sc-map-node.signal {
@@ -1436,6 +1582,7 @@
     .sc-map-icons {
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 7px;
       margin-top: 11px;
       flex-wrap: wrap;
@@ -2071,6 +2218,15 @@
         grid-template-columns: repeat(2, 1fr);
       }
 
+      .sc-logo-marquee {
+        gap: 28px;
+      }
+
+      .sc-logo-marquee-track {
+        gap: 46px;
+        animation-duration: 24s;
+      }
+
       .sc-before-after {
         grid-template-columns: 1fr;
       }
@@ -2212,6 +2368,38 @@
 
       .sc-section {
         padding: 54px 0;
+      }
+
+      .sc-logo-marquee {
+        gap: 22px;
+        padding: 24px 0 30px;
+      }
+
+      .sc-logo-marquee-head {
+        padding: 0 16px;
+      }
+
+      .sc-logo-marquee h3 {
+        font-size: clamp(22px, 7vw, 30px);
+      }
+
+      .sc-logo-marquee-track {
+        gap: 38px;
+        animation-duration: 20s;
+      }
+
+      .sc-logo-card {
+        min-width: 138px;
+        height: 64px;
+      }
+
+      .sc-logo-card img {
+        height: 32px;
+        max-width: 154px;
+      }
+
+      .sc-logo-card.tall img {
+        height: 40px;
       }
 
       .sc-booking {
@@ -2378,7 +2566,7 @@
         </a>
         <nav class="sc-nav-links" aria-label="Sections">
           <a href="#offre">Offre</a>
-          <a href="#workflow">Workflow</a>
+          <a href="#workflow">Méthode</a>
           <a href="#fit">Fit</a>
           <a href="#stack">Stack</a>
         </nav>
@@ -2393,12 +2581,12 @@
             <div class="sc-eyebrow"><span class="sc-pulse" aria-hidden="true"></span> Moteur outbound pour SaaS B2B</div>
             <h1 id="hero-title">Votre moteur outbound<br>pour générer des <span>rendez&#8209;vous qualifiés<br>en continu.</span></h1>
             <p class="sc-hero-text">
-              Scalensy construit votre système outbound de A à Z : marché ciblé, données propres,
+              Scalensy construit votre système outbound de A à Z : marché ciblé, signaux détectés, données propres,
               comptes priorisés, campagnes activées et CRM synchronisé. <strong>Vous ne louez pas une campagne : vous gardez un système documenté, transférable et pilotable par votre équipe.</strong>
             </p>
             <div class="sc-hero-actions">
               <a class="sc-btn" href="#reservation">Réserver un appel stratégique →</a>
-              <a class="sc-btn secondary" href="#workflow">Voir le workflow</a>
+              <a class="sc-btn secondary" href="#workflow">Voir la méthode</a>
             </div>
             <div class="sc-proof-row" aria-label="Points clés">
               <span class="sc-proof-pill"><span class="sc-check">✓</span>Lancement cadré</span>
@@ -2428,12 +2616,12 @@
             <div class="sc-engine-top">
               <div>
                 <div class="sc-engine-kicker">Outbound engine</div>
-                <div class="sc-engine-title" aria-label="Du marché ciblé aux campagnes activées">
-                  <div class="sc-engine-simple-title">Du marché ciblé aux <span>campagnes activées.</span></div>
-                  <div class="sc-engine-simple-sub">Un système clair pour trouver les bons comptes, prioriser les efforts et suivre les actions.</div>
-                  <div class="sc-engine-path" aria-label="Sources multiples, base propre, comptes priorisés, campagnes suivies">
+                <div class="sc-engine-title" aria-label="Du marché ciblé à la détection de signaux">
+                  <div class="sc-engine-simple-title">Du marché ciblé à la <span>détection de signaux.</span></div>
+                  <div class="sc-engine-simple-sub">Un système clair pour repérer le bon timing, prioriser les comptes et lancer les campagnes.</div>
+                  <div class="sc-engine-path" aria-label="Sources multiples, détection de signaux, comptes priorisés, campagnes suivies">
                     <span class="sc-engine-step">Sources multiples</span>
-                    <span class="sc-engine-step">Base propre</span>
+                    <span class="sc-engine-step">Détection de signaux</span>
                     <span class="sc-engine-step">Comptes priorisés</span>
                     <span class="sc-engine-step highlight">Campagnes suivies</span>
                   </div>
@@ -2516,7 +2704,7 @@
         <div class="sc-container">
           <div class="sc-section-head">
             <div>
-              <div class="sc-label">Workflow</div>
+              <div class="sc-label">Méthode</div>
               <h2 class="sc-h2">Transformez un marché flou en pipeline outbound pilotable.</h2>
             </div>
             <p class="sc-intro">Scalensy transforme une base dispersée en système clair : comptes priorisés, signaux lisibles, campagnes suivies et CRM à jour.</p>
@@ -2556,12 +2744,12 @@
               </div>
             </article>
 
-            <article class="sc-workflow-card" aria-label="Workflow outbound Scalensy">
+            <article class="sc-workflow-card" aria-label="Méthode outbound Scalensy">
               <div class="sc-map-flow">
                 <div class="sc-map-row top">
                   <div class="sc-map-node">
                     <strong>Analyse du marché</strong>
-                    <span>marché, concurrents, segmentations</span>
+                    <span>segments ICP, concurrents, opportunités marché</span>
                     <div class="sc-map-icons">
                       <img src="https://www.google.com/s2/favicons?domain=serper.dev&sz=128" alt="Serper">
                       <img src="https://www.google.com/s2/favicons?domain=exa.ai&sz=128" alt="Exa">
@@ -2637,7 +2825,7 @@
                 <div class="sc-map-connector"></div>
                 <div class="sc-map-output">
                   <strong>Lancement des campagnes</strong>
-                  <span>Activer les comptes prioritaires avec un message contextualisé.</span>
+                  <span>Activer les comptes prioritaires avec le bon message, au bon moment.</span>
                   <div class="sc-map-icons">
                     <img src="https://www.google.com/s2/favicons?domain=lemlist.com&sz=128" alt="Lemlist">
                     <img src="https://www.google.com/s2/favicons?domain=n8n.io&sz=128" alt="n8n">
@@ -2694,51 +2882,38 @@
           <div class="sc-section-head">
             <div>
               <div class="sc-label">Stack outbound</div>
-              <h2 class="sc-h2">Une stack transparente, installée dans votre environnement.</h2>
+              <h2 class="sc-h2">Les bons outils, connectés à votre process commercial.</h2>
             </div>
-            <p class="sc-intro">Nous utilisons des outils reconnus pour sourcer, enrichir, vérifier, séquencer et mesurer vos campagnes. Le système reste documenté et transférable.</p>
+            <p class="sc-intro">Scalensy assemble la stack nécessaire pour détecter les signaux, enrichir les comptes et lancer des campagnes contextualisées. Tout reste documenté, transférable et pilotable par votre équipe.</p>
           </div>
 
-          <div class="sc-stack">
-            <div class="sc-tool">
-              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=n8n.io&sz=128" alt=""></span>
-              <strong>n8n</strong>
-              <span>Automatisation</span>
+          <div class="sc-logo-marquee">
+            <div class="sc-logo-marquee-head">
+              <div class="sc-logo-marquee-kicker">Stack déployée</div>
+              <h3>Des outils reliés à un système</h3>
+              <p>Chaque brique a un rôle clair : détecter, enrichir, scorer, activer et suivre.</p>
             </div>
-            <div class="sc-tool">
-              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=lemlist.com&sz=128" alt=""></span>
-              <strong>Lemlist</strong>
-              <span>Séquences</span>
-            </div>
-            <div class="sc-tool">
-              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=anthropic.com&sz=128" alt=""></span>
-              <strong>Claude Code</strong>
-              <span>Build interne</span>
-            </div>
-            <div class="sc-tool">
-              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=millionverifier.com&sz=128" alt=""></span>
-              <strong>MillionVerifier</strong>
-              <span>Vérification</span>
-            </div>
-            <div class="sc-tool">
-              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=bounceban.com&sz=128" alt=""></span>
-              <strong>BounceBan</strong>
-              <span>Catch-all</span>
-            </div>
-            <div class="sc-tool">
-              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=serper.dev&sz=128" alt=""></span>
-              <strong>Serper</strong>
-              <span>Recherche web</span>
-            </div>
-            <div class="sc-tool">
-              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=happierleads.com&sz=128" alt=""></span>
-              <strong>Happierleads</strong>
-              <span>Signaux visiteurs</span>
-            </div>
-            <div class="sc-tool">
-              <span class="sc-tool-logo"><img src="https://www.google.com/s2/favicons?domain=clay.com&sz=128" alt=""></span>
-              <strong>Clay</strong>
-              <span>Enrichissement</span>
+            <div class="sc-logo-marquee-window" aria-label="Outils sales tech Scalensy">
+              <div class="sc-logo-marquee-track">
+                <div class="sc-logo-item"><span class="sc-logo-card"><img src="https://n8n.io/brandguidelines/logo-dark.svg" alt="n8n"></span></div>
+                <div class="sc-logo-item"><span class="sc-logo-card tall"><img src="https://web-assets.lemlist.com/prod/a327b952f10c989e4c701d945b21bc4f" alt="lemlist"></span></div>
+                <div class="sc-logo-item"><span class="sc-logo-card dark"><img src="https://happierleads.com/images/general/logo-white.svg" alt="Happierleads"></span></div>
+                <div class="sc-logo-item"><span class="sc-logo-card sc-sales-nav-logo" aria-label="LinkedIn Sales Navigator"><span class="sc-sales-nav-mark">in</span><span>Sales Navigator</span></span></div>
+                <div class="sc-logo-item"><span class="sc-logo-card"><img src="https://cdn.prod.website-files.com/682cef37e0f7339201cb1007/682d03bf8d591b22a3458e71_trigify_io_full_logo_orange_end.svg" alt="Trigify.io"></span></div>
+                <div class="sc-logo-item"><span class="sc-logo-card"><img src="https://cdn.prod.website-files.com/63860c8c65e7bef4a1eeebeb/68bfbb700e2932c8884be3ee_Instantly%20Logo%202%20%281%29.svg" alt="Instantly"></span></div>
+                <div class="sc-logo-item"><span class="sc-logo-card"><img src="https://cdn.prod.website-files.com/61477f2c24a826836f969afe/6778506d788ebf16fef48551_Clay%20primary%20logo.avif" alt="Clay"></span></div>
+                <div class="sc-logo-item"><span class="sc-logo-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Claude_AI_logo.svg" alt="Claude"></span></div>
+                <div class="sc-logo-item"><span class="sc-logo-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/HubSpot%20Logo.svg" alt="HubSpot"></span></div>
+                <div class="sc-logo-item" aria-hidden="true"><span class="sc-logo-card"><img src="https://n8n.io/brandguidelines/logo-dark.svg" alt=""></span></div>
+                <div class="sc-logo-item" aria-hidden="true"><span class="sc-logo-card tall"><img src="https://web-assets.lemlist.com/prod/a327b952f10c989e4c701d945b21bc4f" alt=""></span></div>
+                <div class="sc-logo-item" aria-hidden="true"><span class="sc-logo-card dark"><img src="https://happierleads.com/images/general/logo-white.svg" alt=""></span></div>
+                <div class="sc-logo-item" aria-hidden="true"><span class="sc-logo-card sc-sales-nav-logo"><span class="sc-sales-nav-mark">in</span><span>Sales Navigator</span></span></div>
+                <div class="sc-logo-item" aria-hidden="true"><span class="sc-logo-card"><img src="https://cdn.prod.website-files.com/682cef37e0f7339201cb1007/682d03bf8d591b22a3458e71_trigify_io_full_logo_orange_end.svg" alt=""></span></div>
+                <div class="sc-logo-item" aria-hidden="true"><span class="sc-logo-card"><img src="https://cdn.prod.website-files.com/63860c8c65e7bef4a1eeebeb/68bfbb700e2932c8884be3ee_Instantly%20Logo%202%20%281%29.svg" alt=""></span></div>
+                <div class="sc-logo-item" aria-hidden="true"><span class="sc-logo-card"><img src="https://cdn.prod.website-files.com/61477f2c24a826836f969afe/6778506d788ebf16fef48551_Clay%20primary%20logo.avif" alt=""></span></div>
+                <div class="sc-logo-item" aria-hidden="true"><span class="sc-logo-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Claude_AI_logo.svg" alt=""></span></div>
+                <div class="sc-logo-item" aria-hidden="true"><span class="sc-logo-card"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/HubSpot%20Logo.svg" alt=""></span></div>
+              </div>
             </div>
           </div>
         </div>
