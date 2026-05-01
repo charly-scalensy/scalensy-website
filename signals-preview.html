@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aperçu schéma signaux - Scalensy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --page: #eaf7ff;
+      --surface: #ffffff;
+      --soft: #f8fdff;
+      --ink: #142018;
+      --muted: #5f6d63;
+      --line: #dfe7dd;
+      --accent: #f5c400;
+      --green: #2f8f5b;
+      --blue: #2454c6;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      background: linear-gradient(180deg, rgba(186, 230, 253, 0.88), rgba(234, 247, 255, 0.74));
+      color: var(--ink);
+      font-family: "Manrope", system-ui, sans-serif;
+      padding: 42px 20px;
+    }
+
+    .preview {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .preview-head {
+      max-width: 760px;
+      margin-bottom: 26px;
+    }
+
+    .proposal {
+      display: grid;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .proposal:first-of-type {
+      margin-top: 0;
+    }
+
+    .proposal-title {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .proposal-title h2 {
+      font-size: clamp(20px, 2.4vw, 28px);
+      line-height: 1.15;
+      font-weight: 700;
+    }
+
+    .proposal-title span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+
+    .label {
+      display: inline-flex;
+      margin-bottom: 12px;
+      color: #9a7100;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.08;
+      font-weight: 650;
+    }
+
+    .preview-head p {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.75;
+    }
+
+    .map {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(20, 32, 24, 0.12);
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(245, 196, 0, 0.12), transparent 32%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 253, 255, 0.94));
+      box-shadow: 0 18px 48px rgba(31, 47, 34, 0.10);
+      padding: 28px;
+    }
+
+    .map::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(36, 84, 198, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(36, 84, 198, 0.05) 1px, transparent 1px);
+      background-size: 42px 42px;
+      pointer-events: none;
+    }
+
+    .flow {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 22px;
+    }
+
+    .row {
+      display: grid;
+      gap: 14px;
+      justify-items: center;
+    }
+
+    .row.top {
+      grid-template-columns: repeat(2, minmax(190px, 1fr));
+      align-items: stretch;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .row.middle {
+      grid-template-columns: repeat(3, minmax(170px, 1fr));
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .row.signal-wide {
+      grid-template-columns: minmax(220px, 0.75fr) minmax(260px, 1fr) minmax(220px, 0.75fr);
+      max-width: 880px;
+    }
+
+    .row.compact {
+      grid-template-columns: repeat(4, minmax(130px, 1fr));
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .node {
+      position: relative;
+      width: 100%;
+      min-height: 76px;
+      border: 1px solid rgba(20, 32, 24, 0.12);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 10px 24px rgba(31, 47, 34, 0.06);
+      padding: 13px;
+      text-align: center;
+    }
+
+    .node.signal {
+      border-color: rgba(47, 143, 91, 0.22);
+      background: linear-gradient(180deg, rgba(232, 245, 237, 0.98), rgba(255, 255, 255, 0.94));
+      box-shadow: 0 14px 30px rgba(47, 143, 91, 0.12);
+    }
+
+    .node.core {
+      max-width: 270px;
+      margin: 0 auto;
+      min-height: 54px;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .node.core .core-note {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .node.big-signal {
+      min-height: 112px;
+      padding: 18px;
+      border-color: rgba(47, 143, 91, 0.34);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(245, 196, 0, 0.16), transparent 52%),
+        linear-gradient(180deg, rgba(232, 245, 237, 0.98), rgba(255, 255, 255, 0.96));
+    }
+
+    .node.big-signal strong {
+      font-size: 18px;
+    }
+
+    .node.big-signal span {
+      font-size: 12.5px;
+    }
+
+    .node strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .node span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
+    .icons {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+      margin-top: 11px;
+      flex-wrap: wrap;
+    }
+
+    .icons img,
+    .mini {
+      width: 28px;
+      height: 28px;
+      border: 1px solid rgba(20, 32, 24, 0.10);
+      border-radius: 7px;
+      background: #ffffff;
+      display: grid;
+      place-items: center;
+      object-fit: contain;
+      padding: 4px;
+      color: var(--blue);
+      font-size: 9px;
+      font-weight: 800;
+    }
+
+    .connector {
+      width: 2px;
+      height: 24px;
+      margin: -4px auto;
+      background: #a8b5ad;
+    }
+
+    .connector.split {
+      width: min(520px, 68%);
+      height: 32px;
+      border: 2px solid #a8b5ad;
+      border-bottom: 0;
+      background: transparent;
+      border-radius: 8px 8px 0 0;
+      margin-bottom: -12px;
+    }
+
+    .output {
+      max-width: 520px;
+      margin: 0 auto;
+      border: 1px solid rgba(245, 196, 0, 0.35);
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #ffffff, #fff8cd 48%, #e8f5ed);
+      padding: 18px;
+      text-align: center;
+      box-shadow: 0 14px 30px rgba(245, 196, 0, 0.14);
+    }
+
+    .output-row {
+      display: grid;
+      grid-template-columns: minmax(260px, 520px);
+      justify-content: center;
+      gap: 14px;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .output-row .output {
+      width: 100%;
+      max-width: none;
+    }
+
+    .output strong {
+      display: block;
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .output span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.55;
+    }
+
+    @media (max-width: 840px) {
+      .map {
+        padding: 18px;
+      }
+
+      .row.top,
+      .row.middle,
+      .row.signal-wide,
+      .row.compact,
+      .output-row {
+        grid-template-columns: 1fr;
+        max-width: 520px;
+      }
+
+      .connector,
+      .connector.split {
+        width: 2px;
+        height: 18px;
+        border: 0;
+        background: #a8b5ad;
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="preview">
+    <div class="preview-head">
+      <div class="label">Aperçu avant intégration</div>
+      <h1>Trois propositions pour présenter les signaux.</h1>
+      <p>Les deux blocs d'interviews et d'enregistrements ont été retirés. Tout est en français, avec Happierleads comme outil principal côté signaux visiteurs.</p>
+    </div>
+
+    <section class="proposal" aria-labelledby="proposal-1">
+      <div class="proposal-title">
+        <h2 id="proposal-1">Proposition 1 : schéma process</h2>
+        <span>La plus proche du screenshot</span>
+      </div>
+      <div class="map" aria-label="Schéma du moteur signal">
+      <div class="flow">
+        <div class="row top">
+          <div class="node">
+            <strong>Analyse du marché</strong>
+            <span>marché, concurrents, segmentations</span>
+            <div class="icons">
+              <img src="https://www.google.com/s2/favicons?domain=serper.dev&amp;sz=128" alt="Serper">
+              <img src="https://www.google.com/s2/favicons?domain=exa.ai&amp;sz=128" alt="Exa">
+            </div>
+          </div>
+          <div class="node">
+            <strong>Analyse clients gagnés</strong>
+            <span>clients gagnés, motifs d'achat</span>
+            <div class="icons">
+              <img src="https://www.google.com/s2/favicons?domain=hubspot.com&amp;sz=128" alt="HubSpot">
+              <img src="https://www.google.com/s2/favicons?domain=salesforce.com&amp;sz=128" alt="Salesforce">
+            </div>
+          </div>
+        </div>
+
+        <div class="connector"></div>
+        <div class="node core">Définition ICP</div>
+        <div class="connector"></div>
+        <div class="node core">Couverture TAM cible</div>
+        <div class="connector split"></div>
+
+        <div class="row middle">
+          <div class="node">
+            <strong>Sources de données</strong>
+            <span>comptes, contacts, marché</span>
+            <div class="icons">
+              <img src="https://www.google.com/s2/favicons?domain=linkedin.com&amp;sz=128" alt="LinkedIn">
+              <img src="https://www.google.com/s2/favicons?domain=apollo.io&amp;sz=128" alt="Apollo">
+              <img src="https://www.google.com/s2/favicons?domain=crunchbase.com&amp;sz=128" alt="Crunchbase">
+            </div>
+          </div>
+          <div class="node signal">
+            <strong>Signaux détectés</strong>
+            <span>visiteurs, intention, timing</span>
+            <div class="icons">
+              <img src="https://www.google.com/s2/favicons?domain=happierleads.com&amp;sz=128" alt="Happierleads">
+              <img src="https://www.google.com/s2/favicons?domain=clay.com&amp;sz=128" alt="Clay">
+              <img src="https://www.google.com/s2/favicons?domain=serper.dev&amp;sz=128" alt="Serper">
+              <span class="mini">ICP</span>
+            </div>
+          </div>
+          <div class="node">
+            <strong>Données CRM</strong>
+            <span>historique, deals, segments</span>
+            <div class="icons">
+              <img src="https://www.google.com/s2/favicons?domain=hubspot.com&amp;sz=128" alt="HubSpot">
+              <img src="https://www.google.com/s2/favicons?domain=attio.com&amp;sz=128" alt="Attio">
+              <img src="https://www.google.com/s2/favicons?domain=pipedrive.com&amp;sz=128" alt="Pipedrive">
+            </div>
+          </div>
+        </div>
+
+        <div class="connector"></div>
+        <div class="node core">
+          Enrichissement des données
+          <div class="icons">
+            <img src="https://www.google.com/s2/favicons?domain=clay.com&amp;sz=128" alt="Clay">
+            <img src="https://www.google.com/s2/favicons?domain=millionverifier.com&amp;sz=128" alt="MillionVerifier">
+            <img src="https://www.google.com/s2/favicons?domain=bounceban.com&amp;sz=128" alt="BounceBan">
+          </div>
+        </div>
+        <div class="connector"></div>
+        <div class="node core">
+          Scoring des comptes
+          <span class="core-note">Prioriser les comptes selon le fit ICP, l'intention et le timing.</span>
+          <div class="icons">
+            <span class="mini">T1</span>
+            <span class="mini">T2</span>
+            <span class="mini">T3</span>
+            <img src="https://www.google.com/s2/favicons?domain=hubspot.com&amp;sz=128" alt="HubSpot">
+          </div>
+        </div>
+        <div class="connector"></div>
+        <div class="output">
+          <strong>Lancement des campagnes</strong>
+          <span>Activer les comptes prioritaires avec un message contextualisé.</span>
+          <div class="icons">
+            <img src="https://www.google.com/s2/favicons?domain=lemlist.com&amp;sz=128" alt="Lemlist">
+            <img src="https://www.google.com/s2/favicons?domain=n8n.io&amp;sz=128" alt="n8n">
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <section class="proposal" aria-labelledby="proposal-2">
+      <div class="proposal-title">
+        <h2 id="proposal-2">Proposition 2 : signaux au centre</h2>
+        <span>La plus orientée “signal”</span>
+      </div>
+      <div class="map" aria-label="Schéma centré sur les signaux">
+        <div class="flow">
+          <div class="row top">
+            <div class="node">
+              <strong>Recherche marché</strong>
+              <span>segments, concurrents, catégories</span>
+              <div class="icons">
+                <img src="https://www.google.com/s2/favicons?domain=serper.dev&amp;sz=128" alt="Serper">
+                <img src="https://www.google.com/s2/favicons?domain=exa.ai&amp;sz=128" alt="Exa">
+              </div>
+            </div>
+            <div class="node">
+              <strong>Données CRM</strong>
+              <span>clients gagnés, deals, historique</span>
+              <div class="icons">
+                <img src="https://www.google.com/s2/favicons?domain=hubspot.com&amp;sz=128" alt="HubSpot">
+                <img src="https://www.google.com/s2/favicons?domain=attio.com&amp;sz=128" alt="Attio">
+              </div>
+            </div>
+          </div>
+          <div class="connector"></div>
+          <div class="row signal-wide">
+            <div class="node">
+              <strong>Fit ICP</strong>
+              <span>qui ressemble à vos meilleurs clients</span>
+              <div class="icons">
+                <span class="mini">T1</span>
+                <span class="mini">T2</span>
+                <span class="mini">T3</span>
+              </div>
+            </div>
+            <div class="node big-signal">
+              <strong>Signaux d'intention</strong>
+              <span>visites du site, intérêt actif, timing marché, changement d'outil</span>
+              <div class="icons">
+                <img src="https://www.google.com/s2/favicons?domain=happierleads.com&amp;sz=128" alt="Happierleads">
+                <img src="https://www.google.com/s2/favicons?domain=clay.com&amp;sz=128" alt="Clay">
+                <img src="https://www.google.com/s2/favicons?domain=serper.dev&amp;sz=128" alt="Serper">
+              </div>
+            </div>
+            <div class="node">
+              <strong>Priorité commerciale</strong>
+              <span>les comptes à contacter maintenant</span>
+              <div class="icons">
+                <span class="mini">HOT</span>
+                <span class="mini">FIT</span>
+              </div>
+            </div>
+          </div>
+          <div class="connector"></div>
+          <div class="output">
+            <strong>Messages contextualisés</strong>
+            <span>Chaque campagne part d'un signal concret, pas d'une séquence générique.</span>
+            <div class="icons">
+              <img src="https://www.google.com/s2/favicons?domain=lemlist.com&amp;sz=128" alt="Lemlist">
+              <img src="https://www.google.com/s2/favicons?domain=n8n.io&amp;sz=128" alt="n8n">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="proposal" aria-labelledby="proposal-3">
+      <div class="proposal-title">
+        <h2 id="proposal-3">Proposition 3 : version compacte</h2>
+        <span>La plus facile à intégrer</span>
+      </div>
+      <div class="map" aria-label="Schéma compact des signaux">
+        <div class="flow">
+          <div class="row compact">
+            <div class="node">
+              <strong>Marché cible</strong>
+              <span>ICP, segments, TAM</span>
+            </div>
+            <div class="node">
+              <strong>Données propres</strong>
+              <span>comptes, contacts, CRM</span>
+            </div>
+            <div class="node signal">
+              <strong>Signaux</strong>
+              <span>visiteurs, intention, timing</span>
+              <div class="icons">
+                <img src="https://www.google.com/s2/favicons?domain=happierleads.com&amp;sz=128" alt="Happierleads">
+              </div>
+            </div>
+            <div class="node">
+              <strong>Activation</strong>
+              <span>campagnes et suivi CRM</span>
+              <div class="icons">
+                <img src="https://www.google.com/s2/favicons?domain=lemlist.com&amp;sz=128" alt="Lemlist">
+              </div>
+            </div>
+          </div>
+          <div class="connector"></div>
+          <div class="output">
+            <strong>Un moteur outbound piloté par les signaux</strong>
+            <span>On sait qui contacter, pourquoi maintenant, et avec quel angle.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
